@@ -1,0 +1,31 @@
+{
+	"jsonRespuesta":
+	[
+		{
+		"idAlbergue":1,
+		"region":"XV Arica y Parinacota",
+		"comuna":"Arica",
+		"tipo":"Centro de Día",
+		"cobertura":30,
+		"camasDisponibles":0,
+		"ejecutor":"CORFAP",
+		"direccion":"Salvo #1049",
+		"telefonos":"",
+		"email":"centrodiacorfap@gmail.com",
+		"lat":"-33.5023675",
+		"lng":"-70.6525367"},
+		{
+		"idAlbergue":2,
+		"region":"V Valparaíso",
+		"comuna":"Valparaíso",
+		"tipo":"Centro de Día",
+		"cobertura":30,
+		"camasDisponibles":0,
+		"ejecutor":"FUNDACIÓN DON BOSCO",
+		"direccion":"Av. Errázuriz Nº 2830, Valparaíso",
+		"telefonos":"+56 3 2259 2534 - +56 3 2259 2500",
+		"email":"carlosaravena@fundaciondonbosco.cl",
+		"lat":"-33.5160952",
+		"lng":"-70.6514212"}
+	]
+}

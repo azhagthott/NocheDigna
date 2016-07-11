@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "286248143209",
+    "firebase_url": "https://noche-digna.firebaseio.com",
+    "project_id": "noche-digna",
+    "storage_bucket": "noche-digna.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:286248143209:android:10596515c05ba486",
+        "android_client_info": {
+          "package_name": "com.zecovery.android.nochedigna"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "286248143209-44j8ohrqdgstcp56hjlcmc2ue5ed80j6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zecovery.android.nochedigna",
+            "certificate_hash": "AFFCC2A6842E8F684E598A3ACA0B6DECFFA52632"
+          }
+        },
+        {
+          "client_id": "286248143209-81mb71i2741pj9trqv1fumk6jmtfpt96.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4RPcy6CLfJ2pr5z4hiW3lVB0St6bP7Go"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "286248143209-81mb71i2741pj9trqv1fumk6jmtfpt96.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
