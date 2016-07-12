@@ -1,4 +1,4 @@
-package com.zecovery.android.nochedigna;
+package com.zecovery.android.nochedigna.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -7,12 +7,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-public class LaunchScreenActivity extends AppCompatActivity {
+import com.zecovery.android.nochedigna.R;
+
+public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_launch_screen);
+        setContentView(R.layout.activity_login);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -24,6 +26,6 @@ public class LaunchScreenActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-    }
 
+    }
 }

@@ -5,7 +5,41 @@
     android:id="@+id/content_launch_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.zecovery.android.nochedigna.LaunchScreenActivity"
+    tools:context="com.zecovery.android.nochedigna.activity.LaunchScreenActivity"
     tools:showIn="@layout/activity_launch_screen">
 
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="sans-serif-light"
+        android:text="@string/title_activity_launch_screen"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toBottomOf="@+id/content_launch_screen"
+        app:layout_constraintLeft_toLeftOf="@+id/content_launch_screen"
+        app:layout_constraintRight_toRightOf="@+id/content_launch_screen"
+        app:layout_constraintTop_toTopOf="@+id/content_launch_screen"
+        tools:text="@string/app_name" />
+
+    <ImageView
+        android:id="@+id/imageViewZecoveryLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:contentDescription="@string/content_description_zecovery_logo"
+        app:layout_constraintBottom_toBottomOf="@+id/content_launch_screen"
+        app:layout_constraintLeft_toLeftOf="@+id/content_launch_screen"
+        app:layout_constraintRight_toRightOf="@+id/content_launch_screen"
+        app:srcCompat="@drawable/zecovey" />
 </android.support.constraint.ConstraintLayout>
