@@ -1,9 +1,136 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment"
-    android:name="com.zecovery.android.nochedigna.fragment.LoginActivityFragment"
+    android:id="@+id/content_login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:layout="@layout/fragment_login" />
+    tools:context="com.zecovery.android.nochedigna.login.LoginActivity"
+    tools:showIn="@layout/activity_login">
+
+    <Button
+        android:id="@+id/buttonLogin"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/login_button_sign_in"
+        app:layout_constraintHorizontal_bias="0.52"
+        app:layout_constraintLeft_toLeftOf="@+id/content_login"
+        app:layout_constraintRight_toRightOf="@+id/content_login"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
+
+    <EditText
+        android:id="@+id/editTextEmail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="240dp"
+        android:ems="10"
+        android:hint="@string/login_email"
+        android:inputType="textEmailAddress"
+        app:layout_constraintLeft_toLeftOf="@+id/content_login"
+        app:layout_constraintRight_toRightOf="@+id/content_login"
+        app:layout_constraintTop_toTopOf="@+id/content_login" />
+
+    <EditText
+        android:id="@+id/editTextPassword"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="@string/login_password"
+        android:inputType="textPassword"
+        app:layout_constraintLeft_toLeftOf="@+id/content_login"
+        app:layout_constraintRight_toRightOf="@+id/content_login"
+        app:layout_constraintTop_toBottomOf="@+id/editTextEmail" />
+
+    <Button
+        android:id="@+id/buttonGoogleLogin"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="120dp"
+        android:background="@color/red_google"
+        android:clickable="true"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:text="@string/login_button_google"
+        android:textColor="@color/white_google"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="@+id/content_login"
+        app:layout_constraintRight_toLeftOf="@+id/textViewLoginSuggest"
+        app:layout_constraintTop_toTopOf="@+id/content_login" />
+
+    <Button
+        android:id="@+id/buttonFacebookLogin"
+        android:layout_width="134dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="120dp"
+        android:background="@color/blue_facebook"
+        android:clickable="true"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:text="@string/login_button_facebook"
+        android:textColor="@color/white_google"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintLeft_toRightOf="@+id/textViewLoginSuggest"
+        app:layout_constraintRight_toRightOf="@+id/content_login"
+        app:layout_constraintTop_toTopOf="@+id/content_login" />
+
+    <TextView
+        android:id="@+id/textViewLoginSuggest"
+        android:layout_width="188dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="80dp"
+        android:text="@string/text_view_suggest_login"
+        app:layout_constraintLeft_toLeftOf="@+id/content_login"
+        app:layout_constraintRight_toRightOf="@+id/content_login"
+        app:layout_constraintTop_toTopOf="@+id/content_login" />
+
+    <TextView
+        android:id="@+id/textViewRecoverPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="40dp"
+        android:text="@string/text_view_recover_password"
+        app:layout_constraintLeft_toLeftOf="@+id/content_login"
+        app:layout_constraintRight_toRightOf="@+id/content_login"
+        app:layout_constraintTop_toBottomOf="@+id/buttonLogin" />
+
+    <TextView
+        android:id="@+id/textViewCreateAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/text_view_create_account"
+        app:layout_constraintBottom_toBottomOf="@+id/content_login"
+        app:layout_constraintRight_toRightOf="@+id/content_login"
+        app:layout_constraintTop_toBottomOf="@+id/textViewRecoverPassword"
+        app:layout_constraintVertical_bias="1.0" />
+
+</android.support.constraint.ConstraintLayout>

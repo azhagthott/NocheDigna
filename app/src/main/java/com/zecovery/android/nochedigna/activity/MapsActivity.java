@@ -1,5 +1,6 @@
 package com.zecovery.android.nochedigna.activity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -7,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -17,12 +19,16 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,8 +42,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class MapsActivity extends FragmentActivity
-        implements OnMapReadyCallback,
-        ConnectionCallbacks, OnConnectionFailedListener {
+        implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener {
 
     private static final String LOG_TAG = MapsActivity.class.getName();
     private static final int PERMISSION_REQUEST_CODE_LOCATION = 1;
@@ -51,7 +56,7 @@ public class MapsActivity extends FragmentActivity
     private double currentLongitude;
     private Albergue albergue;
     private ArrayList<Albergue> arrayList;
-    private Location mLastLocation;
+    protected Location mLastLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,24 +89,41 @@ public class MapsActivity extends FragmentActivity
         mMap = googleMap;
 
         getDataFromFirebase();
-        checkPermissionForM();
 
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                mMap.setMyLocationEnabled(true);
+                mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            } else {
+
+                if (ActivityCompat.shouldShowRequestPermissionRationale(MapsActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    ActivityCompat.requestPermissions(MapsActivity.this,
+                            new String[]{
+                                    android.Manifest.permission.ACCESS_FINE_LOCATION},
+                            PERMISSION_REQUEST_CODE_LOCATION);
+                } else {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.gps_require), Toast.LENGTH_LONG).show();
+                }
+            }
+        } else {
+            mMap.setMyLocationEnabled(true);
+        }
 
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setMapToolbarEnabled(false);
         mMap.getUiSettings().setAllGesturesEnabled(true);
 
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
-            public boolean onMarkerClick(Marker marker) {
-
+            public void onInfoWindowClick(Marker marker) {
                 Log.d(LOG_TAG, "onMarkerClick: marker " + marker.getSnippet());
 
                 Intent intent = new Intent(MapsActivity.this, ScrollingActivity.class);
                 intent.putExtra("ID_ALBERGUE", marker.getSnippet());
                 startActivity(intent);
-                return false;
             }
         });
     }
@@ -119,12 +141,29 @@ public class MapsActivity extends FragmentActivity
     @Override
     public void onConnected(@Nullable Bundle bundle) {
 
-        try {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            } else {
+
+                if (ActivityCompat.shouldShowRequestPermissionRationale(MapsActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    ActivityCompat.requestPermissions(MapsActivity.this,
+                            new String[]{
+                                    android.Manifest.permission.ACCESS_FINE_LOCATION},
+                            PERMISSION_REQUEST_CODE_LOCATION);
+                } else {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.gps_require), Toast.LENGTH_LONG).show();
+                }
+            }
+        } else {
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        } catch (SecurityException e) {
-            Log.d(LOG_TAG, "Exception: " + e);
         }
 
+        if (mLastLocation != null) {
+            LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+            mMap.animateCamera(cameraUpdate);
+        }
     }
 
     @Override
@@ -134,7 +173,7 @@ public class MapsActivity extends FragmentActivity
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        FirebaseCrash.log("ERROR - onConnectionFailed: " + connectionResult);
     }
 
     private void getDataFromFirebase() {
@@ -171,11 +210,21 @@ public class MapsActivity extends FragmentActivity
                     String direccionMarker = arrayList.get(i).getDireccion();
                     String idAlbergue = arrayList.get(i).getIdAlbergue();
 
-                    mMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(latitude, longitude))
-                            .title(direccionMarker)
-                            .snippet(idAlbergue)
-                    );
+                    if (Integer.valueOf(camasDisponibles) > 0) {
+                        mMap.addMarker(new MarkerOptions()
+                                .position(new LatLng(latitude, longitude))
+                                .title(direccionMarker)
+                                .snippet(idAlbergue)
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                        );
+                    } else {
+                        mMap.addMarker(new MarkerOptions()
+                                .position(new LatLng(latitude, longitude))
+                                .title(direccionMarker)
+                                .snippet(idAlbergue)
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                        );
+                    }
                 }
             }
 
@@ -186,33 +235,24 @@ public class MapsActivity extends FragmentActivity
         });
     }
 
-    private void checkPermissionForM() {
-
-        //Reviso los permisos para versiones mayores o iguales a M (Marshmallow - 6.0)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-            //Pregunto si estos permisos fueron aceptados (uso de GPS)
-            //<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-            //<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-            if ((ContextCompat.checkSelfPermission(getApplicationContext(),
-                    android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) &&
-                    ContextCompat.checkSelfPermission(getApplicationContext(),
-                            android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-                //gotoPermissionCheker();
-            } else {
-                mMap.setMyLocationEnabled(true);
-            }
-        }
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
 
+        switch (requestCode) {
             case PERMISSION_REQUEST_CODE_LOCATION:
 
-                if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length == 1 &&
+                        permissions[0] == android.Manifest.permission.ACCESS_FINE_LOCATION &&
+                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    try {
+                        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                        mMap.setMyLocationEnabled(true);
+                    } catch (SecurityException e) {
+                        Log.d(LOG_TAG, "Exception: " + e);
+                    }
+
+                } else {
                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.gps_require),
                             Toast.LENGTH_LONG).show();
 
@@ -228,11 +268,4 @@ public class MapsActivity extends FragmentActivity
                 break;
         }
     }
-
-    private void gotoPermissionCheker() {
-        Intent i = new Intent(MapsActivity.this, PermissionCheckerActivity.class);
-        startActivity(i);
-    }
-
-
 }

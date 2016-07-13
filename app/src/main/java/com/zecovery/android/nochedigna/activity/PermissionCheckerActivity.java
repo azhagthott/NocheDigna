@@ -17,6 +17,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.zecovery.android.nochedigna.R;
+import com.zecovery.android.nochedigna.login.LoginActivity;
 
 import java.util.Timer;
 import java.util.TimerTask;

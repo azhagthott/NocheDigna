@@ -16,6 +16,12 @@
     <!-- White -->
     <color name="white">#FFFFFF</color>
 
+    <!-- Login button -->
+    <color name="white_google">#F1F1F1</color>
+    <color name="red_google">#DD4B39</color>
+    <color name="blue_facebook">#3B5998</color>
+    <color name="blue_twitter">#4099FF</color>
+
     <!-- Red -->
     <color name="red_50">#FFEBEE</color>
     <color name="red_100">#FFCDD2</color>

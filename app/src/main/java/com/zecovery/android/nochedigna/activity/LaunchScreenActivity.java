@@ -8,12 +8,14 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.zecovery.android.nochedigna.R;
+import com.zecovery.android.nochedigna.login.LoginActivity;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class LaunchScreenActivity extends AppCompatActivity implements View.OnClickListener {
 
+    // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
     private static final String LOG_TAG = LaunchScreenActivity.class.getName();
 
     private static final long SPLASH_SCREEN_DELAY = 3000;
@@ -29,7 +31,7 @@ public class LaunchScreenActivity extends AppCompatActivity implements View.OnCl
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                Intent i = new Intent(LaunchScreenActivity.this, PermissionCheckerActivity.class);
+                Intent i = new Intent(LaunchScreenActivity.this, LoginActivity.class);
                 startActivity(i);
                 finish();
             }
