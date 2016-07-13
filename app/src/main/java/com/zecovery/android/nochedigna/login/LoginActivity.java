@@ -21,6 +21,7 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -39,7 +40,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.crash.FirebaseCrash;
 import com.zecovery.android.nochedigna.R;
+import com.zecovery.android.nochedigna.activity.CreateAccountActivity;
 import com.zecovery.android.nochedigna.activity.MapsActivity;
+import com.zecovery.android.nochedigna.activity.PasswordRecoveryActivity;
 
 import java.util.Arrays;
 
@@ -49,13 +52,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private static final String LOG_TAG = LoginActivity.class.getName();
     private static final int RC_SIGN_IN = 9001;
 
-    private Button googleLoginButton;
-    private Button facebookLoginButton;
-
     private ProgressDialog mProgressDialog;
+    private TextView textViewCreateAccount;
+    private TextView textViewPasswordRecovery;
 
     //Facebook Login
     private CallbackManager mCallbackManager;
+    private Button facebookLoginButton;
 
     //Firebase Auth
     private FirebaseAuth mAuth;
@@ -65,11 +68,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText editTextEmail;
     private EditText editTextPassword;
     private Button buttonLogin;
-    private TextView textViewCreateAccount;
 
     //Google Login
     private GoogleApiClient mGoogleApiClient;
+    private Button googleLoginButton;
 
+    private FloatingActionButton fabCreateAccount;
+    private FloatingActionButton fabPasswordRecovery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,14 +133,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
+
         textViewCreateAccount = (TextView) findViewById(R.id.textViewCreateAccount);
+        textViewPasswordRecovery = (TextView) findViewById(R.id.textViewPasswordRecovery);
 
         buttonLogin = (Button) findViewById(R.id.buttonLogin);
         googleLoginButton = (Button) findViewById(R.id.buttonGoogleLogin);
         facebookLoginButton = (Button) findViewById(R.id.buttonFacebookLogin);
+        
+        textViewCreateAccount.setOnClickListener(this);
+        textViewPasswordRecovery.setOnClickListener(this);
 
         buttonLogin.setOnClickListener(this);
-        textViewCreateAccount.setOnClickListener(this);
         googleLoginButton.setOnClickListener(this);
         facebookLoginButton.setOnClickListener(this);
     }
@@ -314,12 +323,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         textViewCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(LOG_TAG, "textViewCreateAccount - clicked!!!");
-                FirebaseCrash.log("account create!");
-                createAccount(editTextEmail.getText().toString(), editTextPassword.getText().toString());
+                startActivity(new Intent(LoginActivity.this, CreateAccountActivity.class));
             }
         });
 
+        textViewPasswordRecovery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this, PasswordRecoveryActivity.class));
+            }
+        });
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

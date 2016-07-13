@@ -12,7 +12,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".activity.LaunchScreenActivity"
             android:label="@string/title_activity_launch_screen"
@@ -33,7 +32,6 @@
             android:name=".activity.MapsActivity"
             android:label="@string/title_activity_maps"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".activity.ScrollingActivity"
             android:label="@string/title_activity_scrolling"
@@ -66,5 +64,29 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="012d5a5a2c08adc9010cd68a3a690eb511f18861" />
+
+        <activity
+            android:name=".activity.TestActivity"
+            android:label="@string/title_activity_test"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.CreateAccountActivity"
+            android:label="@string/title_activity_create_accountctivity"
+            android:parentActivityName=".login.LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.zecovery.android.nochedigna.login.LoginActivity" />
+        </activity>
+        <activity
+            android:name=".activity.PasswordRecoveryActivity"
+            android:label="@string/title_activity_password_recovery"
+            android:parentActivityName=".login.LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.zecovery.android.nochedigna.login.LoginActivity" />
+        </activity>
     </application>
+
 </manifest>

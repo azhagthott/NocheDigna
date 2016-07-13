@@ -28,13 +28,21 @@
 
     <string name="login_email">correo electronica</string>
     <string name="login_password">contraseña</string>
-    <string name="login_button_sign_in">entrar / registrarse</string>
+    <string name="login_button_sign_in">entrar</string>
+    <string name="login_fab_button_create_account">registrarse</string>
+    <string name="login_fab_button_password_recovery">recuperar contraseña</string>
 
     <string name="login_button_facebook">Facebook</string>
     <string name="login_button_twitter">Twitter</string>
     <string name="login_button_google">Google</string>
 
     <string name="facebook_app_id">1585061641786778</string>
+    <string name="title_activity_test">TestActivity</string>
+    <string name="title_activity_create_accountctivity">Crear cuenta</string>
+
+    <string name="create_account_title">Crear cuenta de usuario con correo electronico y contraseña</string>
+    <string name="button_create_account">crear cuenta</string>
+    <string name="title_activity_password_recovery">Recuperar contraseña</string>
 
 
 </resources>

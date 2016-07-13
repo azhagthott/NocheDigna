@@ -112,7 +112,7 @@ public class MapsActivity extends FragmentActivity
             mMap.setMyLocationEnabled(true);
         }
 
-        mMap.getUiSettings().setZoomControlsEnabled(true);
+        //mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setMapToolbarEnabled(false);
         mMap.getUiSettings().setAllGesturesEnabled(true);
 

@@ -40,6 +40,9 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    compile('com.twitter.sdk.android:twitter:1.14.1@aar') {
+        transitive = true;
+    }
     compile 'com.android.support:appcompat-v7:24.0.0'
     compile 'com.google.android.gms:play-services:9.2.0'
     compile 'com.google.maps.android:android-maps-utils:0.3.1'
@@ -51,10 +54,8 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.google.firebase:firebase-crash:9.2.0'
+    compile 'com.getbase:floatingactionbutton:1.10.1'
     testCompile 'junit:junit:4.12'
-    compile('com.twitter.sdk.android:twitter:1.14.1@aar') {
-        transitive = true;
-    }
 }
 
 
