@@ -21,7 +21,7 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.getbase.floatingactionbutton.FloatingActionButton;
+
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -63,8 +63,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     //Firebase Auth
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private String email;
-    private String password;
     private EditText editTextEmail;
     private EditText editTextPassword;
     private Button buttonLogin;
@@ -72,9 +70,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     //Google Login
     private GoogleApiClient mGoogleApiClient;
     private Button googleLoginButton;
-
-    private FloatingActionButton fabCreateAccount;
-    private FloatingActionButton fabPasswordRecovery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +112,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             public void onSuccess(LoginResult loginResult) {
                 Log.d(LOG_TAG, "onSuccess: loginResult OK");
                 handleFacebookAccessToken(loginResult.getAccessToken());
-                //gotoMap();
+                gotoMap();
             }
 
             @Override
@@ -140,7 +135,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         buttonLogin = (Button) findViewById(R.id.buttonLogin);
         googleLoginButton = (Button) findViewById(R.id.buttonGoogleLogin);
         facebookLoginButton = (Button) findViewById(R.id.buttonFacebookLogin);
-        
+
         textViewCreateAccount.setOnClickListener(this);
         textViewPasswordRecovery.setOnClickListener(this);
 
@@ -180,6 +175,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 gotoMap();
             } else {
                 // Google Sign In failed, update UI appropriately
+                Log.d(LOG_TAG, "result: " + result);
                 Toast.makeText(this, getResources().getString(R.string.error_login), Toast.LENGTH_SHORT).show();
             }
         }
@@ -195,6 +191,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+
                         Log.d(LOG_TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
 
                         // If sign in fails, display a message to the user. If sign in succeeds
@@ -286,6 +283,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             Toast.makeText(LoginActivity.this, getResources().getString(R.string.error_login), Toast.LENGTH_SHORT).show();
                         }
                         dismissProgressDialog();
+                        gotoMap();
                     }
                 });
     }

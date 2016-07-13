@@ -3,6 +3,7 @@
     package="com.zecovery.android.nochedigna">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
@@ -24,14 +25,25 @@
             </intent-filter>
         </activity>
 
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+        <activity
+            android:name=".login.LoginActivity"
+            android:label="@string/title_activity_login"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".activity.MapsActivity"
             android:label="@string/title_activity_maps"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".activity.ScrollingActivity"
             android:label="@string/title_activity_scrolling"
@@ -42,6 +54,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zecovery.android.nochedigna.activity.MapsActivity" />
         </activity>
+
         <activity
             android:name=".activity.PermissionCheckerActivity"
             android:label="@string/title_activity_permission_checker"
@@ -52,18 +65,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zecovery.android.nochedigna.activity.LaunchScreenActivity" />
         </activity>
-        <activity
-            android:name=".login.LoginActivity"
-            android:label="@string/title_activity_login"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="012d5a5a2c08adc9010cd68a3a690eb511f18861" />
 
         <activity
             android:name=".activity.TestActivity"
@@ -73,6 +74,7 @@
             android:name=".activity.CreateAccountActivity"
             android:label="@string/title_activity_create_accountctivity"
             android:parentActivityName=".login.LoginActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -87,6 +89,26 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zecovery.android.nochedigna.login.LoginActivity" />
         </activity>
+        <activity
+            android:name=".activity.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".activity.MapsActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.zecovery.android.nochedigna.activity.MapsActivity" />
+        </activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="012d5a5a2c08adc9010cd68a3a690eb511f18861" />
+
     </application>
 
 </manifest>

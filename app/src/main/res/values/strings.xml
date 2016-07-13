@@ -43,6 +43,7 @@
     <string name="create_account_title">Crear cuenta de usuario con correo electronico y contraseña</string>
     <string name="button_create_account">crear cuenta</string>
     <string name="title_activity_password_recovery">Recuperar contraseña</string>
+    <string name="title_activity_settings">Preferencias</string>
 
 
 </resources>

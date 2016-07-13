@@ -47,6 +47,8 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         buttonCreateAccount = (Button) findViewById(R.id.buttonCreateAccount);
 
+        buttonCreateAccount.setOnClickListener(this);
+
         // Init firebase auth
         mAuth = FirebaseAuth.getInstance();
 
@@ -62,7 +64,6 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
             }
         };
     }
-
 
     private void createAccount(String email, String password) {
         Log.d(LOG_TAG, "createAccount:" + email);
@@ -88,7 +89,6 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
                     }
                 });
     }
-
 
     private boolean validateForm() {
 

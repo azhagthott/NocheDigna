@@ -34,8 +34,8 @@ public class ScrollingActivity extends AppCompatActivity {
             textViewDireccion.setText(idAlbergue);
         }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fabCall = (FloatingActionButton) findViewById(R.id.fabCall);
+        fabCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
