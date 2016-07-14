@@ -81,11 +81,12 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
-                            Toast.makeText(CreateAccountActivity.this, getResources().getString(R.string.error_login), Toast.LENGTH_SHORT).show();
+                            FirebaseCrash.log("ERROR CREATING ACCOUNT: " + task.getException());
+                            Toast.makeText(CreateAccountActivity.this, getResources().getString(R.string.error_creating_new_account), Toast.LENGTH_SHORT).show();
                         }
                         dismissProgressDialog();
-                        Intent intent = new Intent(CreateAccountActivity.this, MapsActivity.class);
-                        startActivity(intent);
+                        gotoMap();
+                        finish();
                     }
                 });
     }
@@ -110,6 +111,10 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
             editTextPassword.setError(null);
         }
         return valid;
+    }
+
+    private void gotoMap() {
+        startActivity(new Intent(CreateAccountActivity.this, MapsActivity.class));
     }
 
     private ProgressDialog initiaizePrgressDialog() {

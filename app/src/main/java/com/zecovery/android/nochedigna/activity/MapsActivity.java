@@ -10,13 +10,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.IntegerRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -62,42 +59,51 @@ public class MapsActivity extends AppCompatActivity
 
     //FragmentActivity
 
+    // TAG para debug ejm: Log.d(LOG_TAG, "onMarkerClick: marker " + marker.getSnippet());
     private static final String LOG_TAG = MapsActivity.class.getName();
+
+    // valor del permiso aceptado
     private static final int PERMISSION_REQUEST_CODE_LOCATION = 1;
+
+    // Tiempo para matar la app
     private static final long AUTO_DESTROY = 3000;
 
+    // Elementos UI
+    private FloatingActionButton fabMapsSharing;
+    private ProgressBar mProgressBar;
+    private int mProgressStatus = 0;
+
+    // Elementos del mapa
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
 
-    private Albergue albergue;
-    private ArrayList<Albergue> arrayList;
-
+    // Manejo de ubicacion del usuario
     private LatLng mLatLng;
     private double currentLatitude;
     private double currentLongitude;
 
+    // Ultima ubicacion conocida
     protected Location mLastLocation;
 
-    private ProgressBar mProgressBar;
-    private int mProgressStatus = 0;
-
-
-    private android.support.design.widget.FloatingActionButton fabMapsSharing;
+    // Albergue
+    private Albergue albergue;
+    private ArrayList<Albergue> arrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        // UI - boton y barra de carga en el mapa
         fabMapsSharing = (FloatingActionButton) findViewById(R.id.fabMapsSharing);
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
-
+        // agrega fragment del mapa
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        // Create an instance of GoogleAPIClient.
+        // Instacia GoogleApiClient
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
@@ -105,19 +111,12 @@ public class MapsActivity extends AppCompatActivity
                     .addApi(LocationServices.API)
                     .build();
         }
-
-        Bundle extras = getIntent().getExtras();
-
-        if (extras != null) {
-            currentLatitude = extras.getDouble("CURRENT_LATITUDE");
-            currentLongitude = extras.getDouble("CURRENT_LONGITUDE");
-        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
+        // Se habilita la opcion de compartir solo una vez que se ha cargado el mapa
         fabMapsSharing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -126,28 +125,105 @@ public class MapsActivity extends AppCompatActivity
         });
     }
 
+    /*
+    * Comparte imagen que se guarda como: temporary_file.jpg, enn : file://sdcard/
+    * Texto del que va en el mensaje: shareBody
+    *
+    * */
     private void shareIt() {
-        Bitmap icon = BitmapFactory.decodeResource(getResources(),
-                R.drawable.albergue_1);
-        Intent share = new Intent(Intent.ACTION_SEND);
-        share.setType("image/jpeg");
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        icon.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        File f = new File(Environment.getExternalStorageDirectory()
-                + File.separator + "temporary_file.jpg");
-        try {
-            f.createNewFile();
-            FileOutputStream fo = new FileOutputStream(f);
-            fo.write(bytes.toByteArray());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        String shareBody = "#NocheDigna \nZecovery - http://www.zecovery.com \nhttps://www.google.cl(url para descargar app)";
-        share.putExtra(android.content.Intent.EXTRA_SUBJECT, "Programa Noche Digna");
-        share.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-        share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file:///sdcard/temporary_file.jpg"));
-        startActivity(Intent.createChooser(share, "Compartir"));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+                if (ActivityCompat.shouldShowRequestPermissionRationale(MapsActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    ActivityCompat.requestPermissions(MapsActivity.this,
+                            new String[]{
+                                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            PERMISSION_REQUEST_CODE_LOCATION);
+                } else {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.permission_write_external_stroge_require), Toast.LENGTH_LONG).show();
+                }
+            } else {
+
+                mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                double lat = mLastLocation.getLatitude();
+                double lng = mLastLocation.getLongitude();
+                String location = " http://maps.google.com/maps?q=loc:" + lat / 1E6 + "," + lng / 1E6;
+
+                Bitmap icon = BitmapFactory.decodeResource(getResources(),
+                        R.drawable.albergue_1);
+                Intent share = new Intent(Intent.ACTION_SEND);
+                share.setType("image/jpeg");
+
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                icon.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+
+                File f = new File(Environment.getExternalStorageDirectory()
+                        + File.separator + "temporary_file.jpg");
+                try {
+                    f.createNewFile();
+                    FileOutputStream fo = new FileOutputStream(f);
+                    fo.write(bytes.toByteArray());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                String shareBody = "" +
+                        "\n" + //Salto de linea para que el usuario agregue texto si lo desea
+                        "#NocheDigna " +
+                        location +
+                        "\nZecovery - http://www.zecovery.com" +
+                        // Modificar url con la del play store para descargar la app
+                        " \nhttps://www.google.cl(url para descargar app)";
+                // se usa cuando se comparte por correo electronico
+                String shareSubject = "Programa Noche Digna";
+
+                share.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSubject);
+                share.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file:///sdcard/temporary_file.jpg"));
+                startActivity(Intent.createChooser(share, "Compartir"));
+            }
+        } else {
+
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            double lat = mLastLocation.getLatitude();
+            double lng = mLastLocation.getLongitude();
+            String location = " http://maps.google.com/maps?q=loc:" + lat / 1E6 + "," + lng / 1E6;
+
+            Bitmap icon = BitmapFactory.decodeResource(getResources(),
+                    R.drawable.albergue_1);
+            Intent share = new Intent(Intent.ACTION_SEND);
+            share.setType("image/jpeg");
+
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            icon.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+
+            File f = new File(Environment.getExternalStorageDirectory()
+                    + File.separator + "temporary_file.jpg");
+            try {
+                f.createNewFile();
+                FileOutputStream fo = new FileOutputStream(f);
+                fo.write(bytes.toByteArray());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            String shareBody = "" +
+                    "\n" + //Salto de linea para que el usuario agregue texto si lo desea
+                    "#NocheDigna " +
+                    "\n\n"+
+                    location +
+                    "\nZecovery - http://www.zecovery.com" +
+                    // Modificar url con la del play store para descargar la app
+                    " \n";
+            // se usa cuando se comparte por correo electronico
+            String shareSubject = "Programa Noche Digna";
+
+            share.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSubject);
+            share.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+            share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file:///sdcard/temporary_file.jpg"));
+            startActivity(Intent.createChooser(share, "Compartir"));
+        }
     }
 
     @Override
@@ -160,6 +236,7 @@ public class MapsActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
+        // Llama a SettingsActivity
         if (id == R.id.action_settings) {
             startActivity(new Intent(MapsActivity.this, SettingsActivity.class));
             return true;
@@ -169,17 +246,20 @@ public class MapsActivity extends AppCompatActivity
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+        // creo objeto mapa
         mMap = googleMap;
 
-        getDataFromFirebase();
-
+        // Tipo de mapa = Normal
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
+        // Valido version de OS del usuario para el manejo de permisos
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-
+            // Valido permisos para determinar ubicacion del usuario
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
+                // Si los permisos no han sido aceptados, los sugiero
                 if (ActivityCompat.shouldShowRequestPermissionRationale(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)) {
                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.gps_require), Toast.LENGTH_LONG).show();
                 } else {
@@ -190,23 +270,34 @@ public class MapsActivity extends AppCompatActivity
                 }
 
             } else {
+                // Si los permisos fueron aceptados, habilito:
+                // Boton para mostrar mi ubicacion actual
                 mMap.setMyLocationEnabled(true);
+                // Datos de mi ultima ubicacion conocida, necesarios cuando carga el mapa
                 mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             }
 
         } else {
+            // Si el VERSION_CODES<a 23 o M, entonces los permisos se preguntan al momento de instalar
             mMap.setMyLocationEnabled(true);
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         }
 
+        // deshabilito herramientas
         mMap.getUiSettings().setMapToolbarEnabled(false);
+        // habilito multitouch y otras funciones
         mMap.getUiSettings().setAllGesturesEnabled(true);
 
+        // Traigo los datos de los albergues
+        getDataFromFirebase();
+
+        // Muestra detalles de los albergues al presionar en el infoWindows
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
                 Log.d(LOG_TAG, "onMarkerClick: marker " + marker.getSnippet());
 
+                // Llamo ScrollinActivity
                 Intent intent = new Intent(MapsActivity.this, ScrollingActivity.class);
                 intent.putExtra("ID_ALBERGUE", marker.getSnippet());
                 startActivity(intent);
@@ -254,25 +345,31 @@ public class MapsActivity extends AppCompatActivity
 
     @Override
     public void onConnectionSuspended(int i) {
+        // Mando WARNING a Firebase
         FirebaseCrash.log("WARNING - onConnectionSuspended: " + i);
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        // Mando ERROR a Firebase
         FirebaseCrash.log("ERROR - onConnectionFailed: " + connectionResult);
     }
 
     private void getDataFromFirebase() {
 
+        // Conexion a Firebase
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference reference = database.getReference("jsonRespuesta");
 
+        // Defino arreglo donde se guardan los albergues
         arrayList = new ArrayList<>();
 
+        // Detecta cambios en db de Firebase
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
+                // Recoge los datos de cada albergue
                 for (int i = 0; i < dataSnapshot.getChildrenCount(); i++) {
 
                     mProgressBar.setIndeterminate(true);
@@ -290,6 +387,7 @@ public class MapsActivity extends AppCompatActivity
                     String lat = dataSnapshot.child("" + i + "").child("lat").getValue().toString();
                     String lng = dataSnapshot.child("" + i + "").child("lng").getValue().toString();
 
+                    // creo objeto albergue y lo agrego al arreglo
                     albergue = new Albergue(id, region, comuna, tipo, cobertura, camasDisponibles, ejecutor, direccion, telefonos, email, lat, lng);
                     arrayList.add(albergue);
 
@@ -298,6 +396,8 @@ public class MapsActivity extends AppCompatActivity
                     String direccionMarker = arrayList.get(i).getDireccion();
                     String idAlbergue = arrayList.get(i).getIdAlbergue();
 
+                    // Vaido la cantidad de camas de los albergues
+                    // si es mayor a cero, se dibuja verde
                     if (Integer.valueOf(camasDisponibles) > 0) {
                         mMap.addMarker(new MarkerOptions()
                                 .position(new LatLng(latitude, longitude))
@@ -305,6 +405,7 @@ public class MapsActivity extends AppCompatActivity
                                 .snippet(idAlbergue)
                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                         );
+                        // si no, se dibuja rojo
                     } else {
                         mMap.addMarker(new MarkerOptions()
                                 .position(new LatLng(latitude, longitude))
@@ -313,30 +414,45 @@ public class MapsActivity extends AppCompatActivity
                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                         );
                     }
+
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+                // En caso de error lo envio a Firebase
+                FirebaseCrash.log("DATABASE ERROR: " + databaseError);
                 Log.d(LOG_TAG, "databaseError: " + databaseError);
             }
         });
+
+        //Oculto progress bar
         mProgressBar.setVisibility(View.GONE);
     }
 
+    // Maneja la respuesta del usuario del permissionDialog
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE_LOCATION: {
+
                 // If request is cancelled, the result arrays are empty.
+
+                // Esta advertencia se puede ignorar, es la respuesta del permission dialog,
+                // el ususario solo seleccionar aceptar o rechazar el permiso y ambos casos
+                // están controlados
+
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mMap.setMyLocationEnabled(true);
                     mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
                 } else {
+
+                    // FIXME:mejorar mensaje que indique al usuario que los permisos deben ser aceptados para funcionar correctamente
                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.gps_require),
                             Toast.LENGTH_LONG).show();
 
+                    //OPCIONAL: si el usuario decide no aceptar los permisos, la app muere en x segundos
                     TimerTask task = new TimerTask() {
                         @Override
                         public void run() {

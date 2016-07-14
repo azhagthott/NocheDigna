@@ -18,6 +18,7 @@ public class LaunchScreenActivity extends AppCompatActivity implements View.OnCl
     // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
     private static final String LOG_TAG = LaunchScreenActivity.class.getName();
 
+    // Tiempo en milisegundos que se muestra el LaunchScreen
     private static final long SPLASH_SCREEN_DELAY = 100;
 
     @Override
@@ -25,7 +26,9 @@ public class LaunchScreenActivity extends AppCompatActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch_screen);
 
+        // Logo de Zecovery
         ImageView imageViewZecoveryLogo = (ImageView) findViewById(R.id.imageViewZecoveryLogo);
+        // Se puede cambiar setOnClickListener -> setOnLongClickListener
         imageViewZecoveryLogo.setOnClickListener(this);
 
         TimerTask task = new TimerTask() {
@@ -41,6 +44,7 @@ public class LaunchScreenActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onClick(View view) {
+        //OPCIONAL: Si el usuario toca el logo de Zecovery lo lleva a la pagina
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.zecovery.com")));
     }
 }

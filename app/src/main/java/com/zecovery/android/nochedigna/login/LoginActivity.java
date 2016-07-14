@@ -85,6 +85,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 .requestEmail()
                 .build();
 
+        //Instancia GoogleApiCliente
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
@@ -97,19 +98,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
+
+                // Si el usuario está logueado -> pasa directo al mapa
                 if (user != null) {
                     Log.d(LOG_TAG, "signed in: " + user.getUid());
+                    //FIXME: deshabilitado para pruebas de inicio de sesion
+                    //gotoMap();
                 } else {
                     Log.d(LOG_TAG, "signed out: ");
                 }
             }
         };
 
+        // CallbackManager de Facebook
         mCallbackManager = CallbackManager.Factory.create();
         LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
 
             @Override
             public void onSuccess(LoginResult loginResult) {
+                // Si la loginResult está OK -> muestra el mapa
                 Log.d(LOG_TAG, "onSuccess: loginResult OK");
                 handleFacebookAccessToken(loginResult.getAccessToken());
                 gotoMap();
@@ -117,12 +124,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             @Override
             public void onCancel() {
-                Toast.makeText(getApplicationContext(), "Cancel", Toast.LENGTH_SHORT).show();
+                // Si el usuario cancela inicio de sesion con Facebook -> muestra mensaje
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.login_facebook_canceled), Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onError(FacebookException error) {
-                FirebaseCrash.log("facebook login error: " + error);
+                // En caso de error, envio error a Firebase
+                FirebaseCrash.log("FACEBOOK ERROR LOGIN: " + error);
             }
         });
 
@@ -198,6 +207,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
+                            FirebaseCrash.log("ERROR GOOGLE LOGIN" + task.getException());
                             Log.w(LOG_TAG, "signInWithCredential", task.getException());
                             Toast.makeText(LoginActivity.this, getResources().getString(R.string.error_login), Toast.LENGTH_SHORT).show();
                         }
@@ -239,29 +249,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 });
     }
 
-    private void createAccount(String email, String password) {
-        Log.d(LOG_TAG, "createAccount:" + email);
-        if (!validateForm()) {
-            return;
-        }
-        showProgressDialog();
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(LOG_TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
-
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
-                        if (!task.isSuccessful()) {
-                            Toast.makeText(LoginActivity.this, getResources().getString(R.string.error_login), Toast.LENGTH_SHORT).show();
-                        }
-                        dismissProgressDialog();
-                    }
-                });
-    }
-
     private void signInEmail(String email, String password) {
 
         Log.d(LOG_TAG, "signIn:" + email);
@@ -279,6 +266,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
+                            FirebaseCrash.log("ERROR LOGIN EMAIL_PASSWORD" + task.getException());
                             Log.w(LOG_TAG, "signInWithEmail", task.getException());
                             Toast.makeText(LoginActivity.this, getResources().getString(R.string.error_login), Toast.LENGTH_SHORT).show();
                         }
@@ -387,6 +375,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                         }
                         dismissProgressDialog();
+                        gotoMap();
                     }
                 });
     }
