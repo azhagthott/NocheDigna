@@ -20,7 +20,7 @@ public class AlbergueCluster extends Albergue implements ClusterItem {
         return mPosition;
     }
 
-    public String getNodeId(Albergue albergue) {
+    public String getAlbergueId(Albergue albergue) {
         return albergue.getIdAlbergue();
     }
 }

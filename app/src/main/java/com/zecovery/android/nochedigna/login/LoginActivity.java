@@ -2,12 +2,15 @@ package com.zecovery.android.nochedigna.login;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -43,6 +46,7 @@ import com.zecovery.android.nochedigna.R;
 import com.zecovery.android.nochedigna.activity.CreateAccountActivity;
 import com.zecovery.android.nochedigna.activity.MapsActivity;
 import com.zecovery.android.nochedigna.activity.PasswordRecoveryActivity;
+import com.zecovery.android.nochedigna.activity.SettingsActivity;
 
 import java.util.Arrays;
 
@@ -71,6 +75,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private GoogleApiClient mGoogleApiClient;
     private Button googleLoginButton;
 
+    //settings
+    private boolean sessionPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +85,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sessionPreferences = preferences.getBoolean(SettingsActivity.KEY_PREF_LOGIN, true);
 
         // Google Login
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -136,7 +146,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
 
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
+        editTextEmail.setFocusable(false);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
+        editTextPassword.setFocusable(false);
 
         textViewCreateAccount = (TextView) findViewById(R.id.textViewCreateAccount);
         textViewPasswordRecovery = (TextView) findViewById(R.id.textViewPasswordRecovery);
@@ -156,7 +168,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
+
+        if (sessionPreferences) {
+            mAuth.addAuthStateListener(mAuthListener);
+            gotoMap();
+        } else {
+            mAuth.addAuthStateListener(mAuthListener);
+        }
     }
 
     @Override
@@ -338,7 +356,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         googleLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(LOG_TAG, "googleLoginButton - clicked!!!");
                 signIn();
             }
         });

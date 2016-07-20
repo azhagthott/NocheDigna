@@ -21,7 +21,9 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/fragment_activity_maps" />
+    <include
+        android:id="@+id/include"
+        layout="@layout/fragment_activity_maps" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabMapsSharing"
@@ -30,5 +32,16 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@drawable/ic_share_white" />
+
+    <TextView
+        android:id="@+id/totalAlbergues"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|right"
+        android:layout_weight="1"
+        android:text="@string/map_ui_total_albergues"
+        android:textSize="36sp"
+        app:layout_anchor="@+id/include"
+        app:layout_anchorGravity="bottom|left" />
 
 </android.support.design.widget.CoordinatorLayout>

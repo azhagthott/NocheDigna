@@ -4,8 +4,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
+import com.google.firebase.crash.FirebaseCrash;
 import com.zecovery.android.nochedigna.albergue.Albergue;
 
 import java.util.ArrayList;
@@ -17,18 +20,20 @@ import java.util.List;
 
 public class LocalDataBaseHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final String LOG_TAG = LocalDataBaseHelper.class.getName();
+
+    private static final int DATABASE_VERSION = 6;
     private static final String DATABASE_NAME = "albergue.db";
 
     private static final String TEXT_TYPE = " TEXT";
-    private static final String COMA = " , ";
+    private static final String COMA = ", ";
 
     private static final String TABLE_ALBERGUE = "albergue";
     private static final String ALBERGUE_ID = "id";
     private static final String ALBERGUE_TIPO = "tipo";
     private static final String ALBERGUE_COBERTURA = "cobertura";
     private static final String ALBERGUE_CAMAS_DISPONIBLES = "camas_disponibles";
-    private static final String ALBERGUE_LAT = "tal";
+    private static final String ALBERGUE_LAT = "lat";
     private static final String ALBERGUE_LNG = "lng";
     private static final String ALBERGUE_REGION = "region";
     private static final String ALBERGUE_COMUNA = "comuna";
@@ -38,8 +43,8 @@ public class LocalDataBaseHelper extends SQLiteOpenHelper {
     private static final String ALBERGUE_EJECUTOR = "ejecutor";
 
     private final String SQL_CREATE_ALBERGUES =
-            "CREATE TABLE" + TABLE_ALBERGUE + " (" +
-                    ALBERGUE_ID + " INTEGER PRIMARY KEY" +
+            "CREATE TABLE " + TABLE_ALBERGUE + " (" +
+                    ALBERGUE_ID + TEXT_TYPE + " PRIMARY KEY" + COMA +
                     ALBERGUE_TIPO + TEXT_TYPE + COMA +
                     ALBERGUE_COBERTURA + TEXT_TYPE + COMA +
                     ALBERGUE_CAMAS_DISPONIBLES + TEXT_TYPE + COMA +
@@ -50,8 +55,8 @@ public class LocalDataBaseHelper extends SQLiteOpenHelper {
                     ALBERGUE_DIRECCION + TEXT_TYPE + COMA +
                     ALBERGUE_TELEFONO + TEXT_TYPE + COMA +
                     ALBERGUE_EMAIL + TEXT_TYPE + COMA +
-                    ALBERGUE_EJECUTOR + TEXT_TYPE + COMA +
-                    " )";
+                    ALBERGUE_EJECUTOR + TEXT_TYPE +
+                    ");";
 
     private static final String SQL_DELETE_ALBERGUES = "DROP TABLE IF EXISTS " + TABLE_ALBERGUE;
 
@@ -61,6 +66,7 @@ public class LocalDataBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        Log.d(LOG_TAG, "onCreate: " + SQL_CREATE_ALBERGUES);
         db.execSQL(SQL_CREATE_ALBERGUES);
     }
 
@@ -73,26 +79,39 @@ public class LocalDataBaseHelper extends SQLiteOpenHelper {
     /**
      * addAlbergue: Agrega un albergue a la db local, no afecta a la db en Firebase
      */
-    private void addAlbergue(Albergue albergue) {
+    public void addAlbergue(Albergue albergue) {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
-        ContentValues values = new ContentValues();
-        values.put(ALBERGUE_ID, albergue.getIdAlbergue());
-        values.put(ALBERGUE_TIPO, albergue.getTipo());
-        values.put(ALBERGUE_COBERTURA, albergue.getCobertura());
-        values.put(ALBERGUE_CAMAS_DISPONIBLES, albergue.getCamasDisponibles());
-        values.put(ALBERGUE_LAT, albergue.getLat());
-        values.put(ALBERGUE_LNG, albergue.getLng());
-        values.put(ALBERGUE_REGION, albergue.getRegion());
-        values.put(ALBERGUE_COMUNA, albergue.getComuna());
-        values.put(ALBERGUE_DIRECCION, albergue.getDireccion());
-        values.put(ALBERGUE_TELEFONO, albergue.getTelefonos());
-        values.put(ALBERGUE_EMAIL, albergue.getEmail());
-        values.put(ALBERGUE_EJECUTOR, albergue.getEjecutor());
+        try {
+            ContentValues values = new ContentValues();
 
-        db.insert(TABLE_ALBERGUE, null, values);
-        db.close();
+            values.put(ALBERGUE_ID, albergue.getIdAlbergue());
+            values.put(ALBERGUE_TIPO, albergue.getTipo());
+            values.put(ALBERGUE_COBERTURA, albergue.getCobertura());
+            values.put(ALBERGUE_CAMAS_DISPONIBLES, albergue.getCamasDisponibles());
+            values.put(ALBERGUE_LAT, albergue.getLat());
+            values.put(ALBERGUE_LNG, albergue.getLng());
+            values.put(ALBERGUE_REGION, albergue.getRegion());
+            values.put(ALBERGUE_COMUNA, albergue.getComuna());
+            values.put(ALBERGUE_DIRECCION, albergue.getDireccion());
+            values.put(ALBERGUE_TELEFONO, albergue.getTelefonos());
+            values.put(ALBERGUE_EMAIL, albergue.getEmail());
+            values.put(ALBERGUE_EJECUTOR, albergue.getEjecutor());
+
+            Log.d(LOG_TAG, "addAlbergue: " + values);
+
+            db.insert(TABLE_ALBERGUE, null, values);
+            db.close();
+
+        } catch (SQLiteException sqlEx) {
+            FirebaseCrash.log("SQLiteException: " + sqlEx);
+            Log.d(LOG_TAG, "SQLiteException: " + sqlEx);
+        } catch (Exception e) {
+            FirebaseCrash.log("Exception: " + e);
+            Log.d(LOG_TAG, "Exception: " + e);
+        }
+
     }
 
     /**
@@ -100,7 +119,7 @@ public class LocalDataBaseHelper extends SQLiteOpenHelper {
      *
      * @param id id del albergue que se quiere consultar
      */
-    private Albergue getAlbergue(int id) {
+    public Albergue getAlbergue(int id) {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -150,13 +169,13 @@ public class LocalDataBaseHelper extends SQLiteOpenHelper {
     /**
      * getAlbergues: Devuelve listado con todos los albergues almacenados en db
      */
-    private List<Albergue> getAlbergues() {
+    public List<Albergue> getAlbergues() {
 
         List<Albergue> list = new ArrayList<>();
 
         String selectQuery = "SELECT * FROM " + TABLE_ALBERGUE;
 
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         String idAlbergue = cursor.getString(0);
@@ -175,6 +194,7 @@ public class LocalDataBaseHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 Albergue albergue = new Albergue();
+
                 albergue.setIdAlbergue(idAlbergue);
                 albergue.setTipo(tipo);
                 albergue.setCobertura(cobertura);
@@ -191,20 +211,22 @@ public class LocalDataBaseHelper extends SQLiteOpenHelper {
                 list.add(albergue);
             } while (cursor.moveToNext());
         }
+        cursor.close();
         return list;
     }
 
     /**
      * countAlbergues: Cuenta la cantidad de albergues almacenados en la db local
      */
-    private int countAlbergues() {
+    public int countAlbergues() {
 
         String countQuery = "SELECT * FROM " + TABLE_ALBERGUE;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
+        int total = cursor.getCount();
         cursor.close();
-        return cursor.getCount();
+        return total;
     }
 
     /**
@@ -212,7 +234,7 @@ public class LocalDataBaseHelper extends SQLiteOpenHelper {
      *
      * @param albergue : albergue que se actualizará
      */
-    private int updateAlbergue(Albergue albergue) {
+    public int updateAlbergue(Albergue albergue) {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -238,7 +260,7 @@ public class LocalDataBaseHelper extends SQLiteOpenHelper {
      *
      * @param albergue : albergue que se borrará
      */
-    private void deleteALbergue(Albergue albergue) {
+    public void deleteALbergue(Albergue albergue) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_ALBERGUE, ALBERGUE_ID + " = ?", new String[]{albergue.getIdAlbergue()});
         db.close();

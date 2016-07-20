@@ -4,10 +4,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.zecovery.android.nochedigna.R;
+import com.zecovery.android.nochedigna.albergue.Albergue;
+import com.zecovery.android.nochedigna.data.LocalDataBaseHelper;
 import com.zecovery.android.nochedigna.login.LoginActivity;
 
 import java.util.Timer;
@@ -15,16 +18,16 @@ import java.util.TimerTask;
 
 public class LaunchScreenActivity extends AppCompatActivity implements View.OnClickListener {
 
-    // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
-    private static final String LOG_TAG = LaunchScreenActivity.class.getName();
-
     // Tiempo en milisegundos que se muestra el LaunchScreen
-    private static final long SPLASH_SCREEN_DELAY = 100;
+    private static final long SPLASH_SCREEN_DELAY = 1000;
+    private static final String TAG = "db: ";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch_screen);
+
+
 
         // Logo de Zecovery
         ImageView imageViewZecoveryLogo = (ImageView) findViewById(R.id.imageViewZecoveryLogo);

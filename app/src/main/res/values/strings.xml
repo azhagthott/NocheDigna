@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Programa Noche Digna</string>
     <string name="title_activity_maps">Albergues</string>
-
     <string name="error_permission_map">El uso de GPS es requerido</string>
     <string name="title_activity_scrolling">"Albergue: "</string>
 
@@ -15,41 +14,41 @@
 
     <!-- Settings UI-->
     <string name="action_settings">Preferencias</string>
+    <string name="settings_category_session">Sesión</string>
+    <string name="settings_summary_session">Permite inicar la aplicación sin preguntar que tipo de cuenta desea ocupar</string>
+    <string name="settings_title_session">Recordar inicio de sesión</string>
+    <string name="settings_category_data">Uso de datos</string>
+    <string name="settings_summary_data">Requiere que los datos sean descargados una vez y posteriormente usa base de datos local</string>
+    <string name="settings_title_data">Usar base de datos offline</string>
 
     <!-- Login UI-->
     <string name="title_activity_login">Inicia sesion</string>
-
     <string name="text_view_suggest_login">Puedes iniciar sesión usando:</string>
     <string name="text_view_create_account">Registrate</string>
-
     <string name="text_view_recover_password">¿Olvidaste tu contraseña?</string>
-
     <string name="error_login">Oops! esto no debió ocurrir</string>
-
     <string name="login_email">correo electronica</string>
     <string name="login_password">contraseña</string>
     <string name="login_button_sign_in">entrar</string>
     <string name="login_fab_button_create_account">registrarse</string>
     <string name="login_fab_button_password_recovery">recuperar contraseña</string>
-
     <string name="login_button_facebook">Continua con Facebook</string>
     <string name="login_button_twitter">Twitter</string>
     <string name="login_button_google">Continua con Google</string>
-
-    <string name="facebook_app_id">1585061641786778</string>
     <string name="title_activity_test">TestActivity</string>
     <string name="title_activity_create_accountctivity">Crear cuenta</string>
-
     <string name="create_account_title">Crear cuenta de usuario con correo electronico y contraseña</string>
     <string name="button_create_account">crear cuenta</string>
     <string name="title_activity_password_recovery">Recuperar contraseña</string>
     <string name="title_activity_settings">Preferencias</string>
-
     <string name="login_facebook_canceled">Inicio de sesión con Facebook cancelado</string>
-
     <string name="error_creating_new_account">Oops! algo ha ocurrido al intentar crear su cuenta</string>
+    <string name="facebook_app_id">1585061641786778</string>
 
     <!-- Permission WRITE_EXTERNAL_STORAGE-->
     <string name="permission_write_external_stroge_require">Se requiere permiso para compartir imagenes</string>
+
+    <!-- Map UI -->
+    <string name="map_ui_total_albergues">10</string>
 
 </resources>

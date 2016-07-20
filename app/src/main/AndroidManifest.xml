@@ -56,17 +56,6 @@
         </activity>
 
         <activity
-            android:name=".activity.PermissionCheckerActivity"
-            android:label="@string/title_activity_permission_checker"
-            android:parentActivityName=".activity.LaunchScreenActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.zecovery.android.nochedigna.activity.LaunchScreenActivity" />
-        </activity>
-
-        <activity
             android:name=".activity.TestActivity"
             android:label="@string/title_activity_test"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -105,10 +94,6 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="012d5a5a2c08adc9010cd68a3a690eb511f18861" />
-
     </application>
 
 </manifest>

@@ -1,6 +1,7 @@
 package com.zecovery.android.nochedigna.activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -21,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -45,6 +47,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zecovery.android.nochedigna.R;
 import com.zecovery.android.nochedigna.albergue.Albergue;
+import com.zecovery.android.nochedigna.data.FirebaseDataBaseHelper;
+import com.zecovery.android.nochedigna.data.LocalDataBaseHelper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -89,14 +93,28 @@ public class MapsActivity extends AppCompatActivity
     private Albergue albergue;
     private ArrayList<Albergue> arrayList;
 
+    // data base
+    private LocalDataBaseHelper localDataBaseHelper;
+    private FirebaseDataBaseHelper firebaseDataBaseHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        //DB - Llamo a la db
+        localDataBaseHelper = new LocalDataBaseHelper(this);
+        firebaseDataBaseHelper = new FirebaseDataBaseHelper();
+
         // UI - boton y barra de carga en el mapa
         fabMapsSharing = (FloatingActionButton) findViewById(R.id.fabMapsSharing);
+        TextView totalAlbergues = (TextView) findViewById(R.id.totalAlbergues);
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
+
+        if (localDataBaseHelper != null) {
+            totalAlbergues.setText("total: " + String.valueOf(localDataBaseHelper.countAlbergues()));
+        }
+
 
         // agrega fragment del mapa
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -123,6 +141,7 @@ public class MapsActivity extends AppCompatActivity
                 shareIt();
             }
         });
+
     }
 
     /*
@@ -136,18 +155,19 @@ public class MapsActivity extends AppCompatActivity
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
                 if (ActivityCompat.shouldShowRequestPermissionRationale(MapsActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.permission_write_external_stroge_require), Toast.LENGTH_LONG).show();
+                } else {
                     ActivityCompat.requestPermissions(MapsActivity.this,
                             new String[]{
                                     android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             PERMISSION_REQUEST_CODE_LOCATION);
-                } else {
-                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.permission_write_external_stroge_require), Toast.LENGTH_LONG).show();
                 }
             } else {
 
                 mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
                 double lat = mLastLocation.getLatitude();
                 double lng = mLastLocation.getLongitude();
+
                 String location = " http://maps.google.com/maps?q=loc:" + lat / 1E6 + "," + lng / 1E6;
 
                 Bitmap icon = BitmapFactory.decodeResource(getResources(),
@@ -183,6 +203,7 @@ public class MapsActivity extends AppCompatActivity
                 share.putExtra(Intent.EXTRA_STREAM, Uri.parse("file:///sdcard/temporary_file.jpg"));
                 startActivity(Intent.createChooser(share, "Compartir"));
             }
+
         } else {
 
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -211,7 +232,7 @@ public class MapsActivity extends AppCompatActivity
             String shareBody = "" +
                     "\n" + //Salto de linea para que el usuario agregue texto si lo desea
                     "#NocheDigna " +
-                    "\n\n"+
+                    "\n\n" +
                     location +
                     "\nZecovery - http://www.zecovery.com" +
                     // Modificar url con la del play store para descargar la app
@@ -288,8 +309,8 @@ public class MapsActivity extends AppCompatActivity
         // habilito multitouch y otras funciones
         mMap.getUiSettings().setAllGesturesEnabled(true);
 
-        // Traigo los datos de los albergues
-        getDataFromFirebase();
+        // Traigo los datos desde Firebase
+        firebaseDataBaseHelper.getDataFromFirebase(mMap, this);
 
         // Muestra detalles de los albergues al presionar en el infoWindows
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
@@ -353,81 +374,6 @@ public class MapsActivity extends AppCompatActivity
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         // Mando ERROR a Firebase
         FirebaseCrash.log("ERROR - onConnectionFailed: " + connectionResult);
-    }
-
-    private void getDataFromFirebase() {
-
-        // Conexion a Firebase
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference reference = database.getReference("jsonRespuesta");
-
-        // Defino arreglo donde se guardan los albergues
-        arrayList = new ArrayList<>();
-
-        // Detecta cambios en db de Firebase
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                // Recoge los datos de cada albergue
-                for (int i = 0; i < dataSnapshot.getChildrenCount(); i++) {
-
-                    mProgressBar.setIndeterminate(true);
-
-                    String id = dataSnapshot.child("" + i + "").child("idAlbergue").getValue().toString();
-                    String region = dataSnapshot.child("" + i + "").child("region").getValue().toString();
-                    String comuna = dataSnapshot.child("" + i + "").child("comuna").getValue().toString();
-                    String tipo = dataSnapshot.child("" + i + "").child("tipo").getValue().toString();
-                    String cobertura = dataSnapshot.child("" + i + "").child("cobertura").getValue().toString();
-                    String camasDisponibles = dataSnapshot.child("" + i + "").child("camasDisponibles").getValue().toString();
-                    String ejecutor = dataSnapshot.child("" + i + "").child("ejecutor").getValue().toString();
-                    String direccion = dataSnapshot.child("" + i + "").child("direccion").getValue().toString();
-                    String telefonos = dataSnapshot.child("" + i + "").child("telefonos").getValue().toString();
-                    String email = dataSnapshot.child("" + i + "").child("email").getValue().toString();
-                    String lat = dataSnapshot.child("" + i + "").child("lat").getValue().toString();
-                    String lng = dataSnapshot.child("" + i + "").child("lng").getValue().toString();
-
-                    // creo objeto albergue y lo agrego al arreglo
-                    albergue = new Albergue(id, region, comuna, tipo, cobertura, camasDisponibles, ejecutor, direccion, telefonos, email, lat, lng);
-                    arrayList.add(albergue);
-
-                    double latitude = Double.valueOf(arrayList.get(i).getLat());
-                    double longitude = Double.valueOf(arrayList.get(i).getLng());
-                    String direccionMarker = arrayList.get(i).getDireccion();
-                    String idAlbergue = arrayList.get(i).getIdAlbergue();
-
-                    // Vaido la cantidad de camas de los albergues
-                    // si es mayor a cero, se dibuja verde
-                    if (Integer.valueOf(camasDisponibles) > 0) {
-                        mMap.addMarker(new MarkerOptions()
-                                .position(new LatLng(latitude, longitude))
-                                .title(direccionMarker)
-                                .snippet(idAlbergue)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                        );
-                        // si no, se dibuja rojo
-                    } else {
-                        mMap.addMarker(new MarkerOptions()
-                                .position(new LatLng(latitude, longitude))
-                                .title(direccionMarker)
-                                .snippet(idAlbergue)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                        );
-                    }
-
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // En caso de error lo envio a Firebase
-                FirebaseCrash.log("DATABASE ERROR: " + databaseError);
-                Log.d(LOG_TAG, "databaseError: " + databaseError);
-            }
-        });
-
-        //Oculto progress bar
-        mProgressBar.setVisibility(View.GONE);
     }
 
     // Maneja la respuesta del usuario del permissionDialog

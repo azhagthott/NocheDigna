@@ -19,6 +19,9 @@ public class Albergue {
     private String lat;
     private String lng;
 
+    public Albergue() {
+    }
+
     public Albergue(String idAlbergue, String region, String comuna, String tipo, String cobertura, String camasDisponibles, String ejecutor, String direccion, String telefonos, String email, String lat, String lng) {
         this.idAlbergue = idAlbergue;
         this.region = region;
@@ -32,9 +35,6 @@ public class Albergue {
         this.email = email;
         this.lat = lat;
         this.lng = lng;
-    }
-
-    public Albergue() {
     }
 
     public String getIdAlbergue() {
