@@ -22,7 +22,7 @@ public class LocalDataBaseHelper extends SQLiteOpenHelper {
 
     private static final String LOG_TAG = LocalDataBaseHelper.class.getName();
 
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
     private static final String DATABASE_NAME = "albergue.db";
 
     private static final String TEXT_TYPE = " TEXT";
@@ -185,8 +185,13 @@ public class LocalDataBaseHelper extends SQLiteOpenHelper {
 
         String selectQuery = "SELECT * FROM " + TABLE_ALBERGUE;
 
+        Log.d(LOG_TAG, "selectQuery: " + selectQuery);
+
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
+
+        Log.d(LOG_TAG, "db: " + db);
+        Log.d(LOG_TAG, "cursor: " + cursor);
 
         String idAlbergue = cursor.getString(0);
         String tipo = cursor.getString(1);

@@ -3,7 +3,6 @@ package com.zecovery.android.nochedigna.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,8 +23,6 @@ import com.google.firebase.crash.FirebaseCrash;
 import com.zecovery.android.nochedigna.R;
 import com.zecovery.android.nochedigna.albergue.Albergue;
 import com.zecovery.android.nochedigna.data.LocalDataBaseHelper;
-
-import java.util.concurrent.ExecutionException;
 
 public class ScrollingActivity extends AppCompatActivity {
 
@@ -90,12 +87,13 @@ public class ScrollingActivity extends AppCompatActivity {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                                         if (ActivityCompat.shouldShowRequestPermissionRationale(ScrollingActivity.this, Manifest.permission.CALL_PHONE)) {
+                                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.permission_call_phone_require), Toast.LENGTH_LONG).show();
+                                        } else {
+                                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.permission_call_phone_require), Toast.LENGTH_LONG).show();
                                             ActivityCompat.requestPermissions(ScrollingActivity.this,
                                                     new String[]{
                                                             Manifest.permission.CALL_PHONE},
                                                     PERMISSION_REQUEST_CALL);
-                                        } else {
-                                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.permission_call_phone_require), Toast.LENGTH_LONG).show();
                                         }
                                     } else {
                                         try {
@@ -125,7 +123,8 @@ public class ScrollingActivity extends AppCompatActivity {
                                 }
                             }
                         })
-                        .setActionTextColor(Color.RED)
+                        .setDuration(Snackbar.LENGTH_LONG)
+                        .setActionTextColor(getResources().getColor(R.color.red_300))
                         .show();
             }
         });

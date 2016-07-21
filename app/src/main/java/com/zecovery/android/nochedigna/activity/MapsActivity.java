@@ -47,13 +47,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class MapsActivity extends AppCompatActivity
         implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener {
-
-    //FragmentActivity
 
     // TAG para debug ejm: Log.d(LOG_TAG, "onMarkerClick: marker " + marker.getSnippet());
     private static final String LOG_TAG = MapsActivity.class.getName();
@@ -145,12 +141,16 @@ public class MapsActivity extends AppCompatActivity
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
                 if (ActivityCompat.shouldShowRequestPermissionRationale(MapsActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.permission_write_external_stroge_require), Toast.LENGTH_LONG).show();
+
+                } else {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.permission_write_external_stroge_require), Toast.LENGTH_LONG).show();
                     ActivityCompat.requestPermissions(MapsActivity.this,
                             new String[]{
                                     android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             PERMISSION_REQUEST_CODE_LOCATION);
-                } else {
-                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.permission_write_external_stroge_require), Toast.LENGTH_LONG).show();
+
 
                 }
             } else {
@@ -197,10 +197,11 @@ public class MapsActivity extends AppCompatActivity
 
         } else {
 
+            //https://www.google.com/maps/@-33.5028348,-70.6504512,18z
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             double lat = mLastLocation.getLatitude();
             double lng = mLastLocation.getLongitude();
-            String location = " http://maps.google.com/maps?q=loc:" + lat / 1E6 + "," + lng / 1E6;
+            String location = " https://www.google.com/maps/@" + lat + "," + lng + "18z";
 
             Bitmap icon = BitmapFactory.decodeResource(getResources(),
                     R.drawable.albergue_1);
@@ -266,22 +267,36 @@ public class MapsActivity extends AppCompatActivity
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+
                     ActivityCompat.requestPermissions(MapsActivity.this,
                             new String[]{
                                     Manifest.permission.ACCESS_FINE_LOCATION},
                             PERMISSION_REQUEST_CODE_LOCATION);
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.gps_require), Toast.LENGTH_LONG).show();
+
                 } else {
+
                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.gps_require), Toast.LENGTH_LONG).show();
                 }
             } else {
                 mMap.setMyLocationEnabled(true);
                 mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                if (mLastLocation != null) {
+                    LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+                    mMap.animateCamera(cameraUpdate);
+                }
             }
         } else {
             mMap.setMyLocationEnabled(true);
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (mLastLocation != null) {
+                LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+                mMap.animateCamera(cameraUpdate);
+            }
         }
 
         // deshabilito herramientas
@@ -289,8 +304,10 @@ public class MapsActivity extends AppCompatActivity
         // habilito multitouch y otras funciones
         mMap.getUiSettings().setAllGesturesEnabled(true);
 
+
         // Traigo los datos desde Firebase
         firebaseDataBaseHelper.getDataFromFirebase(mMap, this);
+
 
         // Muestra detalles de los albergues al presionar en el infoWindows
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
@@ -320,16 +337,20 @@ public class MapsActivity extends AppCompatActivity
     public void onConnected(@Nullable Bundle bundle) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.gps_require), Toast.LENGTH_LONG).show();
+
+                } else {
+
                     ActivityCompat.requestPermissions(MapsActivity.this,
                             new String[]{
                                     Manifest.permission.ACCESS_FINE_LOCATION},
                             PERMISSION_REQUEST_CODE_LOCATION);
-                } else {
-                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.gps_require), Toast.LENGTH_LONG).show();
                 }
             } else {
+                mMap.setMyLocationEnabled(true);
                 mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
                 if (mLastLocation != null) {
                     LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
@@ -338,6 +359,8 @@ public class MapsActivity extends AppCompatActivity
                 }
             }
         } else {
+
+            mMap.setMyLocationEnabled(true);
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (mLastLocation != null) {
                 LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
@@ -346,6 +369,34 @@ public class MapsActivity extends AppCompatActivity
             }
         }
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    mMap.setMyLocationEnabled(true);
+                    mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+                    if (mLastLocation != null) {
+                        LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+                        mMap.animateCamera(cameraUpdate);
+                    }
+
+                } else {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.gps_require), Toast.LENGTH_LONG).show();
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+        }
+    }
+
 
     @Override
     public void onConnectionSuspended(int i) {

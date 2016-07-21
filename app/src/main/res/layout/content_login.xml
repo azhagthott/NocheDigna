@@ -10,7 +10,7 @@
 
     <Button
         android:id="@+id/buttonLogin"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginLeft="16dp"
@@ -33,13 +33,14 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="120dp"
         android:ems="10"
         android:hint="@string/login_email"
         android:inputType="textEmailAddress"
+        app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintLeft_toLeftOf="@+id/content_login"
         app:layout_constraintRight_toRightOf="@+id/content_login"
-        app:layout_constraintTop_toBottomOf="@+id/buttonGoogleLogin" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewLoginSuggest" />
 
     <EditText
         android:id="@+id/editTextPassword"
@@ -59,44 +60,43 @@
 
     <Button
         android:id="@+id/buttonGoogleLogin"
-        android:layout_width="0dp"
+        android:layout_width="156dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:layout_marginLeft="16dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginRight="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:background="@color/red_google"
         android:clickable="true"
         android:gravity="center"
         android:padding="16dp"
         android:text="@string/login_button_google"
         android:textColor="@color/white_google"
-        app:layout_constraintLeft_toLeftOf="@+id/content_login"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toRightOf="@+id/buttonFacebookLogin"
         app:layout_constraintRight_toRightOf="@+id/content_login"
-        app:layout_constraintTop_toBottomOf="@+id/buttonFacebookLogin" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewLoginSuggest" />
+
 
     <Button
         android:id="@+id/buttonFacebookLogin"
-        android:layout_width="0dp"
+        android:layout_width="164dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
         android:background="@color/blue_facebook"
         android:clickable="true"
         android:padding="16dp"
         android:text="@string/login_button_facebook"
         android:textColor="@color/white_google"
         app:layout_constraintLeft_toLeftOf="@+id/content_login"
-        app:layout_constraintRight_toRightOf="@+id/content_login"
         app:layout_constraintTop_toBottomOf="@+id/textViewLoginSuggest" />
 
     <TextView
         android:id="@+id/textViewLoginSuggest"
-        android:layout_width="188dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginLeft="16dp"
