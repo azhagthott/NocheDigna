@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:allowBackup="true"
@@ -50,6 +51,13 @@
             android:parentActivityName=".activity.MapsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.DIAL" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zecovery.android.nochedigna.activity.MapsActivity" />

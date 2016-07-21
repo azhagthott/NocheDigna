@@ -4,13 +4,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.zecovery.android.nochedigna.R;
-import com.zecovery.android.nochedigna.albergue.Albergue;
-import com.zecovery.android.nochedigna.data.LocalDataBaseHelper;
 import com.zecovery.android.nochedigna.login.LoginActivity;
 
 import java.util.Timer;
@@ -26,8 +23,6 @@ public class LaunchScreenActivity extends AppCompatActivity implements View.OnCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch_screen);
-
-
 
         // Logo de Zecovery
         ImageView imageViewZecoveryLogo = (ImageView) findViewById(R.id.imageViewZecoveryLogo);

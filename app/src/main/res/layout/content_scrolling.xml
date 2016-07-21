@@ -8,11 +8,170 @@
     tools:context="com.zecovery.android.nochedigna.activity.ScrollingActivity"
     tools:showIn="@layout/activity_scrolling">
 
-    <TextView
-        android:id="@+id/textViewDireccion"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:text="@string/app_name" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="16dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-light"
+                android:padding="8dp"
+                android:text="@string/tipo_lbl"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/textViewTipo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-light"
+                android:padding="8dp"
+                android:text="@string/tipo_text"
+                android:textSize="18sp"
+                android:textStyle="normal|bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-light"
+                android:padding="8dp"
+                android:text="@string/cobertura_lbl"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/textViewCobertura"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-light"
+                android:padding="8dp"
+                android:text="@string/cobertura_text"
+                android:textSize="18sp"
+                android:textStyle="normal|bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-light"
+                android:padding="8dp"
+                android:text="@string/camas_disponibles_lbl"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/textViewCamasDisponibles"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-light"
+                android:padding="8dp"
+                android:text="@string/camas_disponibles_text"
+                android:textSize="18sp"
+                android:textStyle="normal|bold" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:background="@color/grey_300" />
+
+        <TextView
+            android:id="@+id/textViewDireccion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-light"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="@string/region_text" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:background="@color/grey_300" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:fontFamily="sans-serif-light"
+                android:padding="8dp"
+                android:text="@string/telefono_lbl" />
+
+            <TextView
+                android:id="@+id/textViewTelefono"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-light"
+                android:padding="8dp"
+                android:text="@string/telefono_text"
+                android:textStyle="normal|bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:fontFamily="sans-serif-light"
+                android:padding="8dp"
+                android:text="@string/email_lbl" />
+
+            <TextView
+                android:id="@+id/textViewEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-light"
+                android:padding="8dp"
+                android:text="@string/email_text"
+                android:textStyle="normal|bold" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:background="@color/grey_300" />
+
+    </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

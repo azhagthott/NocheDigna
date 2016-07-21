@@ -1,16 +1,11 @@
 <resources>
     <string name="app_name">Programa Noche Digna</string>
     <string name="title_activity_maps">Albergues</string>
-    <string name="error_permission_map">El uso de GPS es requerido</string>
     <string name="title_activity_scrolling">"Albergue: "</string>
 
     <!-- LaunchScreen UI-->
     <string name="title_activity_launch_screen">Programa Noche Digna</string>
     <string name="content_description_zecovery_logo">zecovery logo</string>
-    <string name="gps_require">El GPS debe estar activado</string>
-
-    <!-- Permission Cheker UI-->
-    <string name="title_activity_permission_checker">Permisos</string>
 
     <!-- Settings UI-->
     <string name="action_settings">Preferencias</string>
@@ -48,7 +43,40 @@
     <!-- Permission WRITE_EXTERNAL_STORAGE-->
     <string name="permission_write_external_stroge_require">Se requiere permiso para compartir imagenes</string>
 
+    <!-- Permission ACCESS_FINE_LOCATION-->
+    <!-- Permission ACCESS_COARSE_LOCATION-->
+    <string name="gps_require">El GPS debe estar activado</string>
+    <string name="error_permission_map">El uso de GPS es requerido</string>
+
+    <!-- Permission CALL_PHONE-->
+    <string name="permission_call_phone_require">Se requiere permiso para poder realizar llamados</string>
+
     <!-- Map UI -->
     <string name="map_ui_total_albergues">10</string>
+
+    <!-- ScrollingView UI -->
+    <string name="camas_disponibles_lbl">Camas disponibles: </string>v
+    <string name="camas_disponibles_text">20</string>
+
+    <string name="cobertura_lbl">Cobertura: </string>v
+    <string name="cobertura_text">30</string>
+
+    <string name="tipo_lbl">Tipo: </string>v
+    <string name="tipo_text">Centro de Día</string>
+
+    <string name="region_text">Region Metropolitana</string>v
+    <string name="comuna_text">San Miguel</string>v
+    <string name="direccion_text">Llico #959</string>
+
+    <string name="telefono_lbl">telefono: </string>
+    <string name="telefono_text">+56 22 5223830</string>
+
+    <string name="email_lbl">email: </string>
+    <string name="email_text">info@zecovery.com</string>
+
+
+    <string name="make_call">¿Desea llamar?</string>
+    <string name="confirm_call">SI</string>
+    <string name="error_calling">Ha ocurrido un error al intentar realizar el llamado</string>
 
 </resources>

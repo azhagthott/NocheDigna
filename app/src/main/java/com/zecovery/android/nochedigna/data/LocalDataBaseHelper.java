@@ -22,7 +22,7 @@ public class LocalDataBaseHelper extends SQLiteOpenHelper {
 
     private static final String LOG_TAG = LocalDataBaseHelper.class.getName();
 
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
     private static final String DATABASE_NAME = "albergue.db";
 
     private static final String TEXT_TYPE = " TEXT";
@@ -123,47 +123,57 @@ public class LocalDataBaseHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(
-                TABLE_ALBERGUE, new String[]{
-                        ALBERGUE_ID,
-                        ALBERGUE_TIPO,
-                        ALBERGUE_COBERTURA,
-                        ALBERGUE_CAMAS_DISPONIBLES,
-                        ALBERGUE_LAT,
-                        ALBERGUE_LNG,
-                        ALBERGUE_REGION,
-                        ALBERGUE_COMUNA,
-                        ALBERGUE_DIRECCION,
-                        ALBERGUE_TELEFONO,
-                        ALBERGUE_EMAIL,
-                        ALBERGUE_EJECUTOR
-                },
-                ALBERGUE_ID + "=?",
-                new String[]{String.valueOf(id)},
-                null,
-                null,
-                null,
-                null
-        );
+        try {
+            Cursor cursor = db.query(
+                    TABLE_ALBERGUE, new String[]{
+                            ALBERGUE_ID,
+                            ALBERGUE_TIPO,
+                            ALBERGUE_COBERTURA,
+                            ALBERGUE_CAMAS_DISPONIBLES,
+                            ALBERGUE_LAT,
+                            ALBERGUE_LNG,
+                            ALBERGUE_REGION,
+                            ALBERGUE_COMUNA,
+                            ALBERGUE_DIRECCION,
+                            ALBERGUE_TELEFONO,
+                            ALBERGUE_EMAIL,
+                            ALBERGUE_EJECUTOR
+                    },
+                    ALBERGUE_ID + "=?",
+                    new String[]{String.valueOf(id)},
+                    null,
+                    null,
+                    null,
+                    null
+            );
 
-        if (cursor != null) {
-            cursor.moveToFirst();
+            if (cursor != null) {
+                cursor.moveToFirst();
+            }
+
+            String idAlbergue = cursor.getString(0);
+            String tipo = cursor.getString(1);
+            String cobertura = cursor.getString(2);
+            String camasDisponibles = cursor.getString(3);
+            String lat = cursor.getString(4);
+            String lng = cursor.getString(5);
+            String region = cursor.getString(6);
+            String comuna = cursor.getString(7);
+            String direccion = cursor.getString(8);
+            String telefonos = cursor.getString(9);
+            String email = cursor.getString(10);
+            String ejecutor = cursor.getString(11);
+            return new Albergue(idAlbergue, region, comuna, tipo, cobertura, camasDisponibles, ejecutor, direccion, telefonos, email, lat, lng);
+
+        } catch (SQLiteException sqlE) {
+            Log.d(LOG_TAG, "getAlbergue: " + sqlE);
+            FirebaseCrash.log("SQLiteException: " + sqlE);
+            return null;
+        } catch (Exception e) {
+            Log.d(LOG_TAG, "getAlbergue: " + e);
+            FirebaseCrash.log("Exception: " + e);
+            return null;
         }
-
-        String idAlbergue = cursor.getString(0);
-        String tipo = cursor.getString(1);
-        String cobertura = cursor.getString(2);
-        String camasDisponibles = cursor.getString(3);
-        String lat = cursor.getString(4);
-        String lng = cursor.getString(5);
-        String region = cursor.getString(6);
-        String comuna = cursor.getString(7);
-        String direccion = cursor.getString(8);
-        String telefonos = cursor.getString(9);
-        String email = cursor.getString(10);
-        String ejecutor = cursor.getString(11);
-
-        return new Albergue(idAlbergue, region, comuna, tipo, cobertura, camasDisponibles, ejecutor, direccion, telefonos, email, lat, lng);
     }
 
     /**

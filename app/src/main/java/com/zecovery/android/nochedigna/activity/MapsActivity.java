@@ -1,7 +1,6 @@
 package com.zecovery.android.nochedigna.activity;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -35,16 +34,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.crash.FirebaseCrash;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.zecovery.android.nochedigna.R;
 import com.zecovery.android.nochedigna.albergue.Albergue;
 import com.zecovery.android.nochedigna.data.FirebaseDataBaseHelper;
@@ -75,6 +67,7 @@ public class MapsActivity extends AppCompatActivity
     // Elementos UI
     private FloatingActionButton fabMapsSharing;
     private ProgressBar mProgressBar;
+    private TextView totalAlbergues;
     private int mProgressStatus = 0;
 
     // Elementos del mapa
@@ -108,17 +101,11 @@ public class MapsActivity extends AppCompatActivity
 
         // UI - boton y barra de carga en el mapa
         fabMapsSharing = (FloatingActionButton) findViewById(R.id.fabMapsSharing);
-        TextView totalAlbergues = (TextView) findViewById(R.id.totalAlbergues);
+        totalAlbergues = (TextView) findViewById(R.id.totalAlbergues);
         mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
-        if (localDataBaseHelper != null) {
-            totalAlbergues.setText("total: " + String.valueOf(localDataBaseHelper.countAlbergues()));
-        }
-
-
         // agrega fragment del mapa
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         // Instacia GoogleApiClient
@@ -142,6 +129,9 @@ public class MapsActivity extends AppCompatActivity
             }
         });
 
+        if (localDataBaseHelper != null) {
+            totalAlbergues.setText(String.valueOf(localDataBaseHelper.countAlbergues()));
+        }
     }
 
     /*
@@ -155,12 +145,13 @@ public class MapsActivity extends AppCompatActivity
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
                 if (ActivityCompat.shouldShowRequestPermissionRationale(MapsActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.permission_write_external_stroge_require), Toast.LENGTH_LONG).show();
-                } else {
                     ActivityCompat.requestPermissions(MapsActivity.this,
                             new String[]{
                                     android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             PERMISSION_REQUEST_CODE_LOCATION);
+                } else {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.permission_write_external_stroge_require), Toast.LENGTH_LONG).show();
+
                 }
             } else {
 
@@ -274,32 +265,21 @@ public class MapsActivity extends AppCompatActivity
         // Tipo de mapa = Normal
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-        // Valido version de OS del usuario para el manejo de permisos
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-            // Valido permisos para determinar ubicacion del usuario
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-                // Si los permisos no han sido aceptados, los sugiero
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.gps_require), Toast.LENGTH_LONG).show();
-                } else {
                     ActivityCompat.requestPermissions(MapsActivity.this,
                             new String[]{
                                     Manifest.permission.ACCESS_FINE_LOCATION},
                             PERMISSION_REQUEST_CODE_LOCATION);
+                } else {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.gps_require), Toast.LENGTH_LONG).show();
                 }
-
             } else {
-                // Si los permisos fueron aceptados, habilito:
-                // Boton para mostrar mi ubicacion actual
                 mMap.setMyLocationEnabled(true);
-                // Datos de mi ultima ubicacion conocida, necesarios cuando carga el mapa
                 mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             }
-
         } else {
-            // Si el VERSION_CODES<a 23 o M, entonces los permisos se preguntan al momento de instalar
             mMap.setMyLocationEnabled(true);
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         }
@@ -340,27 +320,30 @@ public class MapsActivity extends AppCompatActivity
     public void onConnected(@Nullable Bundle bundle) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            } else {
-
-                if (ActivityCompat.shouldShowRequestPermissionRationale(MapsActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)) {
                     ActivityCompat.requestPermissions(MapsActivity.this,
                             new String[]{
-                                    android.Manifest.permission.ACCESS_FINE_LOCATION},
+                                    Manifest.permission.ACCESS_FINE_LOCATION},
                             PERMISSION_REQUEST_CODE_LOCATION);
                 } else {
                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.gps_require), Toast.LENGTH_LONG).show();
                 }
+            } else {
+                mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                if (mLastLocation != null) {
+                    LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+                    mMap.animateCamera(cameraUpdate);
+                }
             }
         } else {
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        }
-
-        if (mLastLocation != null) {
-            LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
-            mMap.animateCamera(cameraUpdate);
+            if (mLastLocation != null) {
+                LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+                mMap.animateCamera(cameraUpdate);
+            }
         }
     }
 
@@ -374,42 +357,5 @@ public class MapsActivity extends AppCompatActivity
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         // Mando ERROR a Firebase
         FirebaseCrash.log("ERROR - onConnectionFailed: " + connectionResult);
-    }
-
-    // Maneja la respuesta del usuario del permissionDialog
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_REQUEST_CODE_LOCATION: {
-
-                // If request is cancelled, the result arrays are empty.
-
-                // Esta advertencia se puede ignorar, es la respuesta del permission dialog,
-                // el ususario solo seleccionar aceptar o rechazar el permiso y ambos casos
-                // están controlados
-
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mMap.setMyLocationEnabled(true);
-                    mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-                } else {
-
-                    // FIXME:mejorar mensaje que indique al usuario que los permisos deben ser aceptados para funcionar correctamente
-                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.gps_require),
-                            Toast.LENGTH_LONG).show();
-
-                    //OPCIONAL: si el usuario decide no aceptar los permisos, la app muere en x segundos
-                    TimerTask task = new TimerTask() {
-                        @Override
-                        public void run() {
-                            finish();
-                        }
-                    };
-                    Timer timer = new Timer();
-                    timer.schedule(task, AUTO_DESTROY);
-                }
-                return;
-            }
-        }
     }
 }
