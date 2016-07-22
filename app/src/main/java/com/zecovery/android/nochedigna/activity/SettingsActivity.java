@@ -29,12 +29,12 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
         if (key.equals(KEY_PREF_LOGIN)) {
             Preference login = findPreference(key);
-            login.setDefaultValue(sharedPreferences.getBoolean(KEY_PREF_LOGIN, true));
+            login.setDefaultValue(sharedPreferences.getBoolean(KEY_PREF_LOGIN, false));
         }
 
         if (key.equals(KEY_PREF_DATA)) {
             Preference login = findPreference(key);
-            login.setDefaultValue(sharedPreferences.getBoolean(KEY_PREF_DATA, true));
+            login.setDefaultValue(sharedPreferences.getBoolean(KEY_PREF_DATA, false));
         }
     }
 }

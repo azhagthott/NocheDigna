@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
@@ -48,6 +48,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+
+import com.getbase.floatingactionbutton.FloatingActionButton;
+
+
 public class MapsActivity extends AppCompatActivity
         implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener {
 
@@ -56,12 +60,18 @@ public class MapsActivity extends AppCompatActivity
 
     // valor del permiso aceptado
     private static final int PERMISSION_REQUEST_CODE_LOCATION = 1;
+    private static final int PERMISSION_REQUEST_CALL = 1;
+
+    private static final String CALL_CENTER_PHONE_NUMBER = "800104777";
 
     // Tiempo para matar la app
     private static final long AUTO_DESTROY = 3000;
 
     // Elementos UI
-    private FloatingActionButton fabMapsSharing;
+    private FloatingActionsMenu fabMaps;
+    private FloatingActionButton fabMapsShare;
+    private FloatingActionButton fabMapsCall;
+
     private ProgressBar mProgressBar;
     private TextView totalAlbergues;
     private int mProgressStatus = 0;
@@ -95,15 +105,6 @@ public class MapsActivity extends AppCompatActivity
         localDataBaseHelper = new LocalDataBaseHelper(this);
         firebaseDataBaseHelper = new FirebaseDataBaseHelper();
 
-        // UI - boton y barra de carga en el mapa
-        fabMapsSharing = (FloatingActionButton) findViewById(R.id.fabMapsSharing);
-        totalAlbergues = (TextView) findViewById(R.id.totalAlbergues);
-        mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
-
-        // agrega fragment del mapa
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
         // Instacia GoogleApiClient
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -111,17 +112,50 @@ public class MapsActivity extends AppCompatActivity
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
                     .build();
+
+            // UI - boton y barra de carga en el mapa
+            fabMaps = (FloatingActionsMenu) findViewById(R.id.fabMapsMenu);
+            fabMapsShare = (FloatingActionButton) findViewById(R.id.fabShare);
+            fabMapsCall = (FloatingActionButton) findViewById(R.id.fabCall);
+
+            totalAlbergues = (TextView) findViewById(R.id.totalAlbergues);
+            mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
+
+            // agrega fragment del mapa
+            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+            mapFragment.getMapAsync(this);
+
         }
+    }
+
+    @Override
+    protected void onStart() {
+        mGoogleApiClient.connect();
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        mGoogleApiClient.disconnect();
+        super.onStop();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         // Se habilita la opcion de compartir solo una vez que se ha cargado el mapa
-        fabMapsSharing.setOnClickListener(new View.OnClickListener() {
+        fabMapsShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 shareIt();
+            }
+        });
+
+        // Se habilita la opcion de compartir solo una vez que se ha cargado el mapa
+        fabMapsCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                callIt();
             }
         });
 
@@ -130,11 +164,141 @@ public class MapsActivity extends AppCompatActivity
         }
     }
 
-    /*
-    * Comparte imagen que se guarda como: temporary_file.jpg, enn : file://sdcard/
-    * Texto del que va en el mensaje: shareBody
-    *
-    * */
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+        // creo objeto mapa
+        mMap = googleMap;
+
+        // Tipo de mapa = Normal
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                    ActivityCompat.requestPermissions(MapsActivity.this,
+                            new String[]{
+                                    Manifest.permission.ACCESS_FINE_LOCATION},
+                            PERMISSION_REQUEST_CODE_LOCATION);
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.gps_require), Toast.LENGTH_LONG).show();
+
+                } else {
+
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.gps_require), Toast.LENGTH_LONG).show();
+                }
+            } else {
+                mMap.setMyLocationEnabled(true);
+                mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                if (mLastLocation != null) {
+                    LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 12f);
+                    mMap.animateCamera(cameraUpdate);
+                }
+            }
+        } else {
+            mMap.setMyLocationEnabled(true);
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (mLastLocation != null) {
+                LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 12f);
+                mMap.animateCamera(cameraUpdate);
+            }
+        }
+
+        // deshabilito herramientas
+        mMap.getUiSettings().setMapToolbarEnabled(false);
+        // habilito multitouch y otras funciones
+        mMap.getUiSettings().setAllGesturesEnabled(true);
+
+        // Traigo los datos desde Firebase
+        firebaseDataBaseHelper.getDataFromFirebase(mMap, this);
+
+        // Muestra detalles de los albergues al presionar en el infoWindows
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+
+                // Llamo ScrollinActivity
+                Intent intent = new Intent(MapsActivity.this, ScrollingActivity.class);
+                intent.putExtra("ID_ALBERGUE", marker.getSnippet());
+                startActivity(intent);
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    mMap.setMyLocationEnabled(true);
+                    mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+                    if (mLastLocation != null) {
+                        LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+                        mMap.animateCamera(cameraUpdate);
+                    }
+
+                } else {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.gps_require), Toast.LENGTH_LONG).show();
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+        }
+    }
+
+    /**
+     * Realiza llamado a call center
+     */
+    private void callIt() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(MapsActivity.this, Manifest.permission.CALL_PHONE)) {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.permission_call_phone_require), Toast.LENGTH_LONG).show();
+                    ActivityCompat.requestPermissions(MapsActivity.this,
+                            new String[]{
+                                    Manifest.permission.CALL_PHONE},
+                            PERMISSION_REQUEST_CALL);
+                } else {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.permission_call_phone_require), Toast.LENGTH_LONG).show();
+                }
+            } else {
+                try {
+                    Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                    callIntent.setData(Uri.parse("tel:" + CALL_CENTER_PHONE_NUMBER));
+                    startActivity(callIntent);
+                } catch (Exception e) {
+                    Toast.makeText(MapsActivity.this,
+                            getResources().getString(R.string.error_calling), Toast.LENGTH_SHORT).show();
+                    Log.d(LOG_TAG, "Exception: " + e);
+                    FirebaseCrash.log("Exception" + e);
+                }
+            }
+        } else {
+            try {
+                Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                callIntent.setData(Uri.parse("tel:" + CALL_CENTER_PHONE_NUMBER));
+                startActivity(callIntent);
+            } catch (Exception e) {
+                Toast.makeText(MapsActivity.this,
+                        getResources().getString(R.string.error_calling), Toast.LENGTH_SHORT).show();
+                Log.d(LOG_TAG, "Exception: " + e);
+                FirebaseCrash.log("Exception" + e);
+            }
+        }
+    }
+
+    /**
+     * Comparte imagen que se guarda como: temporary_file.jpg, enn : file://sdcard/
+     * Texto del que va en el mensaje: shareBody
+     */
     private void shareIt() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -143,15 +307,13 @@ public class MapsActivity extends AppCompatActivity
                 if (ActivityCompat.shouldShowRequestPermissionRationale(MapsActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
 
                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.permission_write_external_stroge_require), Toast.LENGTH_LONG).show();
-
-                } else {
-                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.permission_write_external_stroge_require), Toast.LENGTH_LONG).show();
                     ActivityCompat.requestPermissions(MapsActivity.this,
                             new String[]{
                                     android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             PERMISSION_REQUEST_CODE_LOCATION);
 
-
+                } else {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.permission_write_external_stroge_require), Toast.LENGTH_LONG).show();
                 }
             } else {
 
@@ -159,7 +321,7 @@ public class MapsActivity extends AppCompatActivity
                 double lat = mLastLocation.getLatitude();
                 double lng = mLastLocation.getLongitude();
 
-                String location = " http://maps.google.com/maps?q=loc:" + lat / 1E6 + "," + lng / 1E6;
+                String location = " https://www.google.com/maps/@" + lat + "," + lng + ",18z";
 
                 Bitmap icon = BitmapFactory.decodeResource(getResources(),
                         R.drawable.albergue_1);
@@ -201,7 +363,7 @@ public class MapsActivity extends AppCompatActivity
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             double lat = mLastLocation.getLatitude();
             double lng = mLastLocation.getLongitude();
-            String location = " https://www.google.com/maps/@" + lat + "," + lng + "18z";
+            String location = " https://www.google.com/maps/@" + lat + "," + lng + ",18z";
 
             Bitmap icon = BitmapFactory.decodeResource(getResources(),
                     R.drawable.albergue_1);
@@ -258,82 +420,6 @@ public class MapsActivity extends AppCompatActivity
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-
-        // creo objeto mapa
-        mMap = googleMap;
-
-        // Tipo de mapa = Normal
-        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-
-                    ActivityCompat.requestPermissions(MapsActivity.this,
-                            new String[]{
-                                    Manifest.permission.ACCESS_FINE_LOCATION},
-                            PERMISSION_REQUEST_CODE_LOCATION);
-                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.gps_require), Toast.LENGTH_LONG).show();
-
-                } else {
-
-                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.gps_require), Toast.LENGTH_LONG).show();
-                }
-            } else {
-                mMap.setMyLocationEnabled(true);
-                mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-                if (mLastLocation != null) {
-                    LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
-                    mMap.animateCamera(cameraUpdate);
-                }
-            }
-        } else {
-            mMap.setMyLocationEnabled(true);
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            if (mLastLocation != null) {
-                LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
-                mMap.animateCamera(cameraUpdate);
-            }
-        }
-
-        // deshabilito herramientas
-        mMap.getUiSettings().setMapToolbarEnabled(false);
-        // habilito multitouch y otras funciones
-        mMap.getUiSettings().setAllGesturesEnabled(true);
-
-
-        // Traigo los datos desde Firebase
-        firebaseDataBaseHelper.getDataFromFirebase(mMap, this);
-
-
-        // Muestra detalles de los albergues al presionar en el infoWindows
-        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-            @Override
-            public void onInfoWindowClick(Marker marker) {
-                Log.d(LOG_TAG, "onMarkerClick: marker " + marker.getSnippet());
-
-                // Llamo ScrollinActivity
-                Intent intent = new Intent(MapsActivity.this, ScrollingActivity.class);
-                intent.putExtra("ID_ALBERGUE", marker.getSnippet());
-                startActivity(intent);
-            }
-        });
-    }
-
-    protected void onStart() {
-        mGoogleApiClient.connect();
-        super.onStart();
-    }
-
-    protected void onStop() {
-        mGoogleApiClient.disconnect();
-        super.onStop();
-    }
-
-    @Override
     public void onConnected(@Nullable Bundle bundle) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -369,34 +455,6 @@ public class MapsActivity extends AppCompatActivity
             }
         }
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_REQUEST_CODE_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    mMap.setMyLocationEnabled(true);
-                    mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-
-                    if (mLastLocation != null) {
-                        LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
-                        mMap.animateCamera(cameraUpdate);
-                    }
-
-                } else {
-                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.gps_require), Toast.LENGTH_LONG).show();
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return;
-            }
-        }
-    }
-
 
     @Override
     public void onConnectionSuspended(int i) {

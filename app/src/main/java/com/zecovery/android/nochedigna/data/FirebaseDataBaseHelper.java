@@ -131,4 +131,80 @@ public class FirebaseDataBaseHelper {
 
         return list;
     }
+
+    public List<Albergue> getDataForLaunch(Context context) {
+
+        // User Preferences
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        dataUsagePreferences = preferences.getBoolean(SettingsActivity.KEY_PREF_DATA, true);
+
+        List<Albergue> list = new ArrayList<>();
+        final LocalDataBaseHelper localDataBaseHelper = new LocalDataBaseHelper(context);
+
+        if (dataUsagePreferences) {
+
+            try {
+                //list = localDataBaseHelper.getAlbergues();
+            } catch (SQLiteException sqlE) {
+                Log.d(LOG_TAG, "SQLiteException: " + sqlE);
+                FirebaseCrash.log("SQLiteException: " + sqlE);
+            }
+
+        } else {
+            // Conexion a Firebase
+            final FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference reference = database.getReference("jsonRespuesta");
+
+            // Detecta cambios en db de Firebase
+
+            final List<Albergue> finalList = list;
+            reference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+                    // Recoge los datos de cada albergue
+                    for (int i = 0; i < dataSnapshot.getChildrenCount(); i++) {
+
+                        String id = dataSnapshot.child("" + i + "").child("idAlbergue").getValue().toString();
+                        String region = dataSnapshot.child("" + i + "").child("region").getValue().toString();
+                        String comuna = dataSnapshot.child("" + i + "").child("comuna").getValue().toString();
+                        String tipo = dataSnapshot.child("" + i + "").child("tipo").getValue().toString();
+                        String cobertura = dataSnapshot.child("" + i + "").child("cobertura").getValue().toString();
+                        String camasDisponibles = dataSnapshot.child("" + i + "").child("camasDisponibles").getValue().toString();
+                        String ejecutor = dataSnapshot.child("" + i + "").child("ejecutor").getValue().toString();
+                        String direccion = dataSnapshot.child("" + i + "").child("direccion").getValue().toString();
+                        String telefonos = dataSnapshot.child("" + i + "").child("telefonos").getValue().toString();
+                        String email = dataSnapshot.child("" + i + "").child("email").getValue().toString();
+                        String lat = dataSnapshot.child("" + i + "").child("lat").getValue().toString();
+                        String lng = dataSnapshot.child("" + i + "").child("lng").getValue().toString();
+
+                        // creo objeto albergue y lo agrego al arreglo
+                        Albergue albergue = new Albergue(id, region, comuna, tipo, cobertura, camasDisponibles, ejecutor, direccion, telefonos, email, lat, lng);
+                        finalList.add(albergue);
+
+                        if (localDataBaseHelper.getAlbergue(Integer.valueOf(id)) == null) {
+                            localDataBaseHelper.addAlbergue(albergue);
+                        }
+
+                        double latitude = Double.valueOf(finalList.get(i).getLat());
+                        double longitude = Double.valueOf(finalList.get(i).getLng());
+
+                        String direccionMarker = finalList.get(i).getDireccion();
+                        String idAlbergue = finalList.get(i).getIdAlbergue();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    // En caso de error lo envio a Firebase
+                    FirebaseCrash.log("DATABASE ERROR: " + databaseError);
+                    Log.d(LOG_TAG, "databaseError: " + databaseError);
+                }
+            });
+
+        }
+
+        return list;
+    }
 }

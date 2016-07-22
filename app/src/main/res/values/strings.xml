@@ -52,6 +52,7 @@
 
     <!-- Map UI -->
     <string name="map_ui_total_albergues">10</string>
+    <string name="map_share_location">Compartir</string>
 
     <!-- ScrollingView UI -->
     <string name="camas_disponibles_lbl">Camas disponibles: </string>v

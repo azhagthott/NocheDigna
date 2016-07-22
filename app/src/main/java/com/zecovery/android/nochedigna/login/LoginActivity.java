@@ -67,6 +67,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     //Firebase Auth
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseUser user;
     private EditText editTextEmail;
     private EditText editTextPassword;
     private Button buttonLogin;
@@ -107,7 +108,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
+                user = firebaseAuth.getCurrentUser();
 
                 // Si el usuario está logueado -> pasa directo al mapa
                 if (user != null) {
@@ -170,6 +171,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onStart();
 
         if (sessionPreferences) {
+            Log.d(LOG_TAG, "user: " + user);
             mAuth.addAuthStateListener(mAuthListener);
             gotoMap();
         } else {

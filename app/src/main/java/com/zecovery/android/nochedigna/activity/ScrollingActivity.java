@@ -83,44 +83,7 @@ public class ScrollingActivity extends AppCompatActivity {
                         .setAction(getResources().getString(R.string.confirm_call), new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                                        if (ActivityCompat.shouldShowRequestPermissionRationale(ScrollingActivity.this, Manifest.permission.CALL_PHONE)) {
-                                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.permission_call_phone_require), Toast.LENGTH_LONG).show();
-                                        } else {
-                                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.permission_call_phone_require), Toast.LENGTH_LONG).show();
-                                            ActivityCompat.requestPermissions(ScrollingActivity.this,
-                                                    new String[]{
-                                                            Manifest.permission.CALL_PHONE},
-                                                    PERMISSION_REQUEST_CALL);
-                                        }
-                                    } else {
-                                        try {
-                                            String phone = "+56225223830";
-                                            Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                                            callIntent.setData(Uri.parse("tel:" + phone));
-                                            startActivity(callIntent);
-                                        } catch (Exception e) {
-                                            Toast.makeText(ScrollingActivity.this,
-                                                    getResources().getString(R.string.error_calling), Toast.LENGTH_SHORT).show();
-                                            Log.d(LOG_TAG, "Exception: " + e);
-                                            FirebaseCrash.log("Exception" + e);
-                                        }
-                                    }
-                                } else {
-                                    try {
-                                        String phone = "+56225223830";
-                                        Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                                        callIntent.setData(Uri.parse("tel:" + phone));
-                                        startActivity(callIntent);
-                                    } catch (Exception e) {
-                                        Toast.makeText(ScrollingActivity.this,
-                                                getResources().getString(R.string.error_calling), Toast.LENGTH_SHORT).show();
-                                        Log.d(LOG_TAG, "Exception: " + e);
-                                        FirebaseCrash.log("Exception" + e);
-                                    }
-                                }
+                                callIt();
                             }
                         })
                         .setDuration(Snackbar.LENGTH_LONG)
@@ -129,5 +92,45 @@ public class ScrollingActivity extends AppCompatActivity {
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void callIt() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(ScrollingActivity.this, Manifest.permission.CALL_PHONE)) {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.permission_call_phone_require), Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.permission_call_phone_require), Toast.LENGTH_LONG).show();
+                    ActivityCompat.requestPermissions(ScrollingActivity.this,
+                            new String[]{
+                                    Manifest.permission.CALL_PHONE},
+                            PERMISSION_REQUEST_CALL);
+                }
+            } else {
+                try {
+                    String phone = "+56225223830";
+                    Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                    callIntent.setData(Uri.parse("tel:" + phone));
+                    startActivity(callIntent);
+                } catch (Exception e) {
+                    Toast.makeText(ScrollingActivity.this,
+                            getResources().getString(R.string.error_calling), Toast.LENGTH_SHORT).show();
+                    Log.d(LOG_TAG, "Exception: " + e);
+                    FirebaseCrash.log("Exception" + e);
+                }
+            }
+        } else {
+            try {
+                String phone = "+56225223830";
+                Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                callIntent.setData(Uri.parse("tel:" + phone));
+                startActivity(callIntent);
+            } catch (Exception e) {
+                Toast.makeText(ScrollingActivity.this,
+                        getResources().getString(R.string.error_calling), Toast.LENGTH_SHORT).show();
+                Log.d(LOG_TAG, "Exception: " + e);
+                FirebaseCrash.log("Exception" + e);
+            }
+        }
     }
 }
