@@ -38,6 +38,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.firebase.crash.FirebaseCrash;
 import com.zecovery.android.nochedigna.R;
+import com.zecovery.android.nochedigna.about.AboutMActivity;
+import com.zecovery.android.nochedigna.about.AboutZeActivity;
 import com.zecovery.android.nochedigna.albergue.Albergue;
 import com.zecovery.android.nochedigna.data.FirebaseDataBaseHelper;
 import com.zecovery.android.nochedigna.data.LocalDataBaseHelper;
@@ -50,6 +52,7 @@ import java.util.ArrayList;
 
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.zecovery.android.nochedigna.intro.IntroActivity;
 
 
 public class MapsActivity extends AppCompatActivity
@@ -403,7 +406,7 @@ public class MapsActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_login, menu);
+        getMenuInflater().inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -416,6 +419,27 @@ public class MapsActivity extends AppCompatActivity
             startActivity(new Intent(MapsActivity.this, SettingsActivity.class));
             return true;
         }
+
+        if (id == R.id.action_intro) {
+            startActivity(new Intent(MapsActivity.this, IntroActivity.class));
+            return true;
+        }
+
+        if (id == R.id.about) {
+            startActivity(new Intent(MapsActivity.this, AboutMActivity.class));
+            return true;
+        }
+
+        if (id == R.id.about_zecovery) {
+            startActivity(new Intent(MapsActivity.this, AboutZeActivity.class));
+            return true;
+        }
+
+        if (id == R.id.resync) {
+            FirebaseDataBaseHelper firebaseDataBaseHelper = new FirebaseDataBaseHelper();
+            firebaseDataBaseHelper.getDataForLaunch(this);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

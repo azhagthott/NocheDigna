@@ -7,14 +7,33 @@
     <string name="title_activity_launch_screen">Programa Noche Digna</string>
     <string name="content_description_zecovery_logo">zecovery logo</string>
 
+    <!-- APP Intro UI-->
+    <string name="app_intro_skip">Introducción omitida</string>
+
+    <string name="app_intro_fragment_1_title">Programa Noche Digna</string>
+    <string name="app_intro_fragment_1_description">El Programa Noche Digna del Ministerio de Desarrollo Social</string>
+
+    <string name="app_intro_fragment_2_title">Loclalización</string>
+    <string name="app_intro_fragment_2_description">La aplicacion Prgrama Noche Digna requiere permiso para poder conocer tu ubicacion en el mapa</string>
+
+    <string name="app_intro_fragment_3_title">Llamar</string>
+    <string name="app_intro_fragment_3_description">Para poder comunicarte con la mesa de ayuda del Ministerior de Desarrollo Social o con los distitnos albergues, debes autorizar a la aplicación para hacer llamados</string>
+
+    <string name="app_intro_fragment_4_title">Compartir</string>
+    <string name="app_intro_fragment_4_description">Si quieres lo puedes compartir en tu red social favorita</string>
+
     <!-- Settings UI-->
     <string name="action_settings">Preferencias</string>
+    <string name="action_intro">Ver Intro</string>
+    <string name="action_resync">Sincronizar</string>
+    <string name="action_about">Ministerio de Desarrollo Social</string>
+    <string name="action_about_zecovery">Zecovery</string>
     <string name="settings_category_session">Sesión</string>
     <string name="settings_summary_session">Permite inicar la aplicación sin preguntar que tipo de cuenta desea ocupar</string>
     <string name="settings_title_session">Recordar inicio de sesión</string>
     <string name="settings_category_data">Uso de datos</string>
     <string name="settings_summary_data">Requiere que los datos sean descargados una vez y posteriormente usa base de datos local</string>
-    <string name="settings_title_data">Usar base de datos offline</string>
+    <string name="settings_title_data">Datos offline</string>
 
     <!-- Login UI-->
     <string name="title_activity_login">Inicia sesion</string>
@@ -77,5 +96,21 @@
     <string name="make_call">¿Desea llamar?</string>
     <string name="confirm_call">Hacer llamado</string>
     <string name="error_calling">Ha ocurrido un error al intentar realizar el llamado</string>
+
+    <!-- About UI Ministerio/Ze -->
+    <string name="title_activity_about_m">Ministerio de Desarrollo Social</string>
+
+    <string name="title_about_noche_digna">Programa Noche Digna</string>
+
+    <string name="about_m">El programa Noche Digna es un sistema público de centros de atención para personas en situación de calle orientado a la protección de la vida y a la superación de estas personas. Ofrece alternativas de alojamiento temporal a las personas en situación de calle.</string>
+
+
+    <string name="title_activity_about_ze">Zecovery</string>
+
+    <string name="about_ze">El miércoles 1 de junio se llevó a cabo la presentación de la nueva marca para nuestra empresa. EXEC desde ahora es ZECOVERY. Empresa que suma todos los talentos y experiencia recabada en estos años y los une a nuevos partner y nuevos talentos con los que apoyaremos a nuestros clientes en sus desafíos y proyectos, que apoyarán a sus comunidades de usuarios. \n\n
+        El evento contó con la asistencia de representantes de gran parte de nuestros de clientes, en las instalaciones del hotel Crowne Plaza Santiago. “EXEC crece y evoluciona, y lo hace junto a Uds a través de vuestros desafíos, de sus sueños y de sus necesidades”, señalo Paulina Rivera Bogdanic, Gerente General de Zecovery. \n\n
+        Queremos crecer junto a nuestros clientes, y evolucionar ofreciendo lo mejor de los recursos TI a su disposición para lograr soluciones únicas y pioneras en el mercado.\n\n
+        De la misma forma, Jenny Zegarra, Gerente Comercial de Zecovery afirmó “Nuestro equipo se compromete a generar soluciones simples e inteligentes que ofrezcan valor a sus comunidades de usuarios a nivel nacional e internacional”.
+    </string>
 
 </resources>

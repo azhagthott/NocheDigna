@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.zecovery.android.nochedigna.R;
 import com.zecovery.android.nochedigna.data.FirebaseDataBaseHelper;
+import com.zecovery.android.nochedigna.intro.IntroActivity;
 import com.zecovery.android.nochedigna.login.LoginActivity;
 
 import java.util.Timer;
@@ -25,6 +26,8 @@ public class LaunchScreenActivity extends AppCompatActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch_screen);
 
+        FirebaseDataBaseHelper firebaseDataBaseHelper = new FirebaseDataBaseHelper();
+        firebaseDataBaseHelper.getDataForLaunch(this);
 
         // Logo de Zecovery
         ImageView imageViewZecoveryLogo = (ImageView) findViewById(R.id.imageViewZecoveryLogo);
@@ -34,7 +37,7 @@ public class LaunchScreenActivity extends AppCompatActivity implements View.OnCl
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                startActivity(new Intent(LaunchScreenActivity.this, LoginActivity.class));
+                startActivity(new Intent(LaunchScreenActivity.this, IntroActivity.class));
                 finish();
             }
         };

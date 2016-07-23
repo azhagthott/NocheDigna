@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_about_ze"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_google"
+    tools:context="com.zecovery.android.nochedigna.about.AboutZeActivity"
+    tools:showIn="@layout/activity_about_ze">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:fontFamily="sans-serif-light"
+            android:padding="16dp"
+            android:text="@string/action_about_zecovery"
+            android:textColor="@color/grey_800"
+            android:textSize="36sp" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="@string/about_ze"
+            android:textColor="@color/grey_800"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            app:layout_constraintHorizontal_bias="0.98"
+            app:layout_constraintTop_toBottomOf="@+id/textView3"
+            app:layout_constraintVertical_bias="1.0"
+            app:srcCompat="@drawable/zecovey" />
+    </LinearLayout>
+
+</ScrollView>

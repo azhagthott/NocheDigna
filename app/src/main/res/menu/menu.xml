@@ -1,0 +1,36 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.zecovery.android.nochedigna.login.LoginActivity">
+
+    <item
+        android:id="@+id/resync"
+        android:icon="@drawable/ic_sync"
+        android:orderInCategory="100"
+        android:title="@string/action_resync"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_intro"
+        android:orderInCategory="100"
+        android:title="@string/action_intro"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/about"
+        android:orderInCategory="100"
+        android:title="@string/action_about"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/about_zecovery"
+        android:orderInCategory="100"
+        android:title="@string/action_about_zecovery"
+        app:showAsAction="never" />
+</menu>

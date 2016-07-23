@@ -35,6 +35,7 @@ public class ScrollingActivity extends AppCompatActivity {
     private TextView textViewDireccion;
     private TextView textViewTelefono;
     private TextView textViewEmail;
+    private TextView textViewEjecutor;
 
     private Albergue albergue;
 
@@ -58,6 +59,7 @@ public class ScrollingActivity extends AppCompatActivity {
         textViewDireccion = (TextView) findViewById(R.id.textViewDireccion);
         textViewTelefono = (TextView) findViewById(R.id.textViewTelefono);
         textViewEmail = (TextView) findViewById(R.id.textViewEmail);
+        textViewEjecutor = (TextView) findViewById(R.id.textViewEjecutor);
 
         Bundle extra = getIntent().getExtras();
 
@@ -66,13 +68,22 @@ public class ScrollingActivity extends AppCompatActivity {
             String idAlbergue = extra.getString("ID_ALBERGUE");
 
             albergue = localDataBaseHelper.getAlbergue(Integer.valueOf(idAlbergue));
+
             textViewTipo.setText(albergue.getTipo());
             textViewCobertura.setText(albergue.getCobertura());
             textViewCamasDisponibles.setText(albergue.getCamasDisponibles());
+            textViewEjecutor.setText(albergue.getEjecutor());
+
+            if (Integer.valueOf(albergue.getCamasDisponibles()) > 0) {
+                textViewCamasDisponibles.setTextColor(getResources().getColor(R.color.green_400));
+            } else {
+                textViewCamasDisponibles.setTextColor(getResources().getColor(R.color.red_400));
+            }
+
             textViewDireccion.setText(albergue.getDireccion() + ", " + albergue.getComuna() + ", " + albergue.getRegion());
             textViewTelefono.setText(albergue.getTelefonos());
             textViewEmail.setText(albergue.getEmail());
-            toolbarLayout.setTitle(albergue.getTipo());
+            toolbarLayout.setTitle(albergue.getEjecutor());
         }
 
         FloatingActionButton fabCall = (FloatingActionButton) findViewById(R.id.fabCall);
@@ -87,7 +98,7 @@ public class ScrollingActivity extends AppCompatActivity {
                             }
                         })
                         .setDuration(Snackbar.LENGTH_LONG)
-                        .setActionTextColor(getResources().getColor(R.color.red_300))
+                        .setActionTextColor(getResources().getColor(R.color.red_400))
                         .show();
             }
         });

@@ -25,7 +25,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity
+            android:name=".intro.IntroActivity"
+            android:label="@string/title_activity_launch_screen"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".login.LoginActivity"
             android:label="@string/title_activity_login"
@@ -35,7 +43,6 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activity.MapsActivity"
             android:label="@string/title_activity_maps"
@@ -44,25 +51,23 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activity.ScrollingActivity"
             android:label="@string/title_activity_scrolling"
             android:parentActivityName=".activity.MapsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.DIAL" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zecovery.android.nochedigna.activity.MapsActivity" />
         </activity>
-
         <activity
             android:name=".activity.TestActivity"
             android:label="@string/title_activity_test"
@@ -102,6 +107,25 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
+
+        <activity
+            android:name=".about.AboutMActivity"
+            android:label="@string/title_activity_about_m"
+            android:parentActivityName=".activity.MapsActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.zecovery.android.nochedigna.activity.MapsActivity" />
+        </activity>
+        <activity
+            android:name=".about.AboutZeActivity"
+            android:label="@string/title_activity_about_ze"
+            android:parentActivityName=".activity.MapsActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.zecovery.android.nochedigna.activity.MapsActivity" />
+        </activity>
     </application>
 
 </manifest>
