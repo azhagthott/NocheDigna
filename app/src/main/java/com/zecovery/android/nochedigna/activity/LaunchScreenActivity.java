@@ -1,6 +1,7 @@
 package com.zecovery.android.nochedigna.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,9 +18,10 @@ import java.util.TimerTask;
 
 public class LaunchScreenActivity extends AppCompatActivity implements View.OnClickListener {
 
-    // Tiempo en milisegundos que se muestra el LaunchScreen
     private static final long SPLASH_SCREEN_DELAY = 1000;
-    private static final String TAG = "db: ";
+    private static final String LOG_TAG = "db: ";
+
+    private SharedPreferences preferences = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,25 +31,40 @@ public class LaunchScreenActivity extends AppCompatActivity implements View.OnCl
         FirebaseDataBaseHelper firebaseDataBaseHelper = new FirebaseDataBaseHelper();
         firebaseDataBaseHelper.getDataForLaunch(this);
 
-        // Logo de Zecovery
+        preferences = getSharedPreferences("com.zecovery.android.nochedigna", MODE_PRIVATE);
+        final Boolean firstRun = preferences.getBoolean("first_run", true);
+
         ImageView imageViewZecoveryLogo = (ImageView) findViewById(R.id.imageViewZecoveryLogo);
-        // Se puede cambiar setOnClickListener -> setOnLongClickListener
         imageViewZecoveryLogo.setOnClickListener(this);
 
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                startActivity(new Intent(LaunchScreenActivity.this, IntroActivity.class));
-                finish();
+
+                if(firstRun){
+                    startActivity(new Intent(LaunchScreenActivity.this, IntroActivity.class));
+                    finish();
+                }else{
+                    startActivity(new Intent(LaunchScreenActivity.this, LoginActivity.class));
+                    finish();
+                }
             }
         };
+
         Timer timer = new Timer();
         timer.schedule(task, SPLASH_SCREEN_DELAY);
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (preferences.getBoolean("first_run", true)) {
+            preferences.edit().putBoolean("first_run", false).apply();
+        }
+    }
+
+    @Override
     public void onClick(View view) {
-        //OPCIONAL: Si el usuario toca el logo de Zecovery lo lleva a la pagina
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.zecovery.com")));
     }
 }

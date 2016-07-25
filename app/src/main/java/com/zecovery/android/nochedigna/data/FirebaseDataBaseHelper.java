@@ -1,10 +1,13 @@
 package com.zecovery.android.nochedigna.data;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteException;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -16,6 +19,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zecovery.android.nochedigna.R;
 import com.zecovery.android.nochedigna.activity.SettingsActivity;
 import com.zecovery.android.nochedigna.albergue.Albergue;
 
@@ -32,19 +36,29 @@ public class FirebaseDataBaseHelper {
 
     //settings
     private boolean dataUsagePreferences;
+    private ProgressDialog loading;
 
     public FirebaseDataBaseHelper() {
     }
 
-    public List<Albergue> getDataFromFirebase(final GoogleMap map, Context context) {
+    public List<Albergue> getDataFromFirebase(final GoogleMap map, final Context context) {
 
         // User Preferences
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         dataUsagePreferences = preferences.getBoolean(SettingsActivity.KEY_PREF_DATA, true);
 
+        loading = ProgressDialog.show(context,
+                context.getResources().getString(R.string.loading_data_dialog_title),
+                context.getResources().getString(R.string.loading_data_dialog_message),
+                true, true, new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialogInterface) {
+                        Toast.makeText(context, "Los datos no hanpodido ser cargados", Toast.LENGTH_LONG).show();
+                    }
+                });
+
         List<Albergue> list = new ArrayList<>();
         final LocalDataBaseHelper localDataBaseHelper = new LocalDataBaseHelper(context);
-
 
         if (dataUsagePreferences) {
 
@@ -67,9 +81,12 @@ public class FirebaseDataBaseHelper {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
+                    loading.dismiss();
 
                     // Recoge los datos de cada albergue
                     for (int i = 0; i < dataSnapshot.getChildrenCount(); i++) {
+
+                        Log.d(LOG_TAG, "onDataChange: " + i);
 
                         String id = dataSnapshot.child("" + i + "").child("idAlbergue").getValue().toString();
                         String region = dataSnapshot.child("" + i + "").child("region").getValue().toString();
@@ -103,7 +120,7 @@ public class FirebaseDataBaseHelper {
                         if (Integer.valueOf(camasDisponibles) > 0) {
                             map.addMarker(new MarkerOptions()
                                     .position(new LatLng(latitude, longitude))
-                                    .title(direccionMarker)
+                                    .title(ejecutor)
                                     .snippet(idAlbergue)
                                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                             );
@@ -111,7 +128,7 @@ public class FirebaseDataBaseHelper {
                         } else {
                             map.addMarker(new MarkerOptions()
                                     .position(new LatLng(latitude, longitude))
-                                    .title(direccionMarker)
+                                    .title(ejecutor)
                                     .snippet(idAlbergue)
                                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                             );
@@ -124,13 +141,16 @@ public class FirebaseDataBaseHelper {
                     // En caso de error lo envio a Firebase
                     FirebaseCrash.log("DATABASE ERROR: " + databaseError);
                     Log.d(LOG_TAG, "databaseError: " + databaseError);
+                    loading.dismiss();
                 }
+
+
             });
 
         }
-
         return list;
     }
+
 
     public List<Albergue> getDataForLaunch(Context context) {
 
@@ -186,12 +206,6 @@ public class FirebaseDataBaseHelper {
                         if (localDataBaseHelper.getAlbergue(Integer.valueOf(id)) == null) {
                             localDataBaseHelper.addAlbergue(albergue);
                         }
-
-                        double latitude = Double.valueOf(finalList.get(i).getLat());
-                        double longitude = Double.valueOf(finalList.get(i).getLng());
-
-                        String direccionMarker = finalList.get(i).getDireccion();
-                        String idAlbergue = finalList.get(i).getIdAlbergue();
                     }
                 }
 
@@ -199,12 +213,9 @@ public class FirebaseDataBaseHelper {
                 public void onCancelled(DatabaseError databaseError) {
                     // En caso de error lo envio a Firebase
                     FirebaseCrash.log("DATABASE ERROR: " + databaseError);
-                    Log.d(LOG_TAG, "databaseError: " + databaseError);
                 }
             });
-
         }
-
         return list;
     }
 }

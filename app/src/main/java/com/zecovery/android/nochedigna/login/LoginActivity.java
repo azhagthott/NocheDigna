@@ -10,11 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -24,7 +22,6 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -45,7 +42,6 @@ import com.google.firebase.crash.FirebaseCrash;
 import com.zecovery.android.nochedigna.R;
 import com.zecovery.android.nochedigna.activity.CreateAccountActivity;
 import com.zecovery.android.nochedigna.activity.MapsActivity;
-import com.zecovery.android.nochedigna.activity.PasswordRecoveryActivity;
 import com.zecovery.android.nochedigna.activity.SettingsActivity;
 
 import java.util.Arrays;
@@ -57,8 +53,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private static final int RC_SIGN_IN = 9001;
 
     private ProgressDialog mProgressDialog;
-    private TextView textViewCreateAccount;
-    private TextView textViewPasswordRecovery;
+    private Button buttonCreateAccount;
 
     //Facebook Login
     private CallbackManager mCallbackManager;
@@ -113,8 +108,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 // Si el usuario está logueado -> pasa directo al mapa
                 if (user != null) {
                     Log.d(LOG_TAG, "signed in: " + user.getUid());
-                    //FIXME: deshabilitado para pruebas de inicio de sesion
-                    //gotoMap();
+                    gotoMap();
                 } else {
                     Log.d(LOG_TAG, "signed out: ");
                 }
@@ -147,19 +141,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
 
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
-        editTextEmail.setFocusable(false);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
-        editTextPassword.setFocusable(false);
 
-        textViewCreateAccount = (TextView) findViewById(R.id.textViewCreateAccount);
-        textViewPasswordRecovery = (TextView) findViewById(R.id.textViewPasswordRecovery);
+        buttonCreateAccount = (Button) findViewById(R.id.buttonCreateAccount);
 
         buttonLogin = (Button) findViewById(R.id.buttonLogin);
         googleLoginButton = (Button) findViewById(R.id.buttonGoogleLogin);
         facebookLoginButton = (Button) findViewById(R.id.buttonFacebookLogin);
 
-        textViewCreateAccount.setOnClickListener(this);
-        textViewPasswordRecovery.setOnClickListener(this);
+        buttonCreateAccount.setOnClickListener(this);
 
         buttonLogin.setOnClickListener(this);
         googleLoginButton.setOnClickListener(this);
@@ -326,19 +316,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View view) {
 
-        textViewCreateAccount.setOnClickListener(new View.OnClickListener() {
+        buttonCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(LoginActivity.this, CreateAccountActivity.class));
             }
         });
 
-        textViewPasswordRecovery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this, PasswordRecoveryActivity.class));
-            }
-        });
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

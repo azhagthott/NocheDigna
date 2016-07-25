@@ -1,19 +1,26 @@
 package com.zecovery.android.nochedigna.activity;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -23,6 +30,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -42,18 +50,13 @@ import com.zecovery.android.nochedigna.about.AboutMActivity;
 import com.zecovery.android.nochedigna.about.AboutZeActivity;
 import com.zecovery.android.nochedigna.albergue.Albergue;
 import com.zecovery.android.nochedigna.data.FirebaseDataBaseHelper;
-import com.zecovery.android.nochedigna.data.LocalDataBaseHelper;
+import com.zecovery.android.nochedigna.intro.IntroActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-
-
-import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.zecovery.android.nochedigna.intro.IntroActivity;
-
 
 public class MapsActivity extends AppCompatActivity
         implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener {
@@ -96,7 +99,6 @@ public class MapsActivity extends AppCompatActivity
     private ArrayList<Albergue> arrayList;
 
     // data base
-    private LocalDataBaseHelper localDataBaseHelper;
     private FirebaseDataBaseHelper firebaseDataBaseHelper;
 
     @Override
@@ -105,7 +107,6 @@ public class MapsActivity extends AppCompatActivity
         setContentView(R.layout.activity_maps);
 
         //DB - Llamo a la db
-        localDataBaseHelper = new LocalDataBaseHelper(this);
         firebaseDataBaseHelper = new FirebaseDataBaseHelper();
 
         // Instacia GoogleApiClient
@@ -162,9 +163,69 @@ public class MapsActivity extends AppCompatActivity
             }
         });
 
-        if (localDataBaseHelper != null) {
-            totalAlbergues.setText(String.valueOf(localDataBaseHelper.countAlbergues()));
+        if (!isGPSEnabled(this)) {
+            alerDialog(this, "GPS");
+            Log.d(LOG_TAG, "isGPSEnabled: false");
+        } else {
+            Log.d(LOG_TAG, "isGPSEnabled: true");
         }
+    }
+
+    private boolean isNetworkEnabled(Context c) {
+        ConnectivityManager cm = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
+    }
+
+    private boolean isGPSEnabled(Context c) {
+        LocationManager lm = (LocationManager) c.getSystemService(c.LOCATION_SERVICE);
+        return lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
+    private AlertDialog.Builder alerDialog(final Context c, String service) {
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(c);
+
+        if (service.equals("GPS")) {
+            alert.setIcon(getResources().getDrawable(R.drawable.ic_location_disabled));
+            alert.setTitle(getResources().getString(R.string.alert_gps_title));
+            alert.setMessage(getResources().getString(R.string.alert_gps_message));
+            alert.setPositiveButton(getResources().getString(R.string.alert_positive), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    c.startActivity(intent);
+                }
+            });
+
+            alert.setNegativeButton(getResources().getString(R.string.alert_negative), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    FirebaseCrash.log("usuario no acepta prender GPS");
+                }
+            });
+            alert.show();
+        } else if (service.equals("NETWORK")) {
+            alert.setIcon(getResources().getDrawable(R.drawable.ic_signal_cellular_off));
+            alert.setTitle(getResources().getString(R.string.alert_network_title));
+            alert.setMessage(getResources().getString(R.string.alert_network_message));
+            alert.setPositiveButton(getResources().getString(R.string.alert_positive), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    c.startActivity(intent);
+                }
+            });
+
+            alert.setNegativeButton(getResources().getString(R.string.alert_negative), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    FirebaseCrash.log("usuario no acepta prender red de datos");
+                }
+            });
+            alert.show();
+        }
+        return alert;
     }
 
     @Override
@@ -194,18 +255,21 @@ public class MapsActivity extends AppCompatActivity
                 mMap.setMyLocationEnabled(true);
                 mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
                 if (mLastLocation != null) {
-                    LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 12f);
+                    mLatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mLatLng, 8.0f);
                     mMap.animateCamera(cameraUpdate);
+//                    mMap.animateCamera(CameraUpdateFactory.zoomTo(8.0f));
                 }
             }
         } else {
             mMap.setMyLocationEnabled(true);
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (mLastLocation != null) {
-                LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 12f);
+                mLatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mLatLng, 8.0f);
                 mMap.animateCamera(cameraUpdate);
+//                mMap.animateCamera(CameraUpdateFactory.zoomTo(8.0f));
+
             }
         }
 
@@ -242,9 +306,10 @@ public class MapsActivity extends AppCompatActivity
                     mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
                     if (mLastLocation != null) {
-                        LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+                        mLatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mLatLng, 8.0f);
                         mMap.animateCamera(cameraUpdate);
+//                        mMap.animateCamera(CameraUpdateFactory.zoomTo(8.0f));
                     }
 
                 } else {
@@ -304,6 +369,8 @@ public class MapsActivity extends AppCompatActivity
      */
     private void shareIt() {
 
+        String location;
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
@@ -320,11 +387,19 @@ public class MapsActivity extends AppCompatActivity
                 }
             } else {
 
-                mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-                double lat = mLastLocation.getLatitude();
-                double lng = mLastLocation.getLongitude();
+                try {
 
-                String location = " https://www.google.com/maps/@" + lat + "," + lng + ",18z";
+                    mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                    currentLatitude = mLastLocation.getLatitude();
+                    currentLongitude = mLastLocation.getLongitude();
+                    location = " https://www.google.com/maps/@" + currentLatitude + "," + currentLongitude + ",18z";
+
+                } catch (Exception e) {
+                    Log.d(LOG_TAG, "Exception: " + e);
+
+                    location = "";
+
+                }
 
                 Bitmap icon = BitmapFactory.decodeResource(getResources(),
                         R.drawable.albergue_1);
@@ -362,11 +437,16 @@ public class MapsActivity extends AppCompatActivity
 
         } else {
 
-            //https://www.google.com/maps/@-33.5028348,-70.6504512,18z
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            double lat = mLastLocation.getLatitude();
-            double lng = mLastLocation.getLongitude();
-            String location = " https://www.google.com/maps/@" + lat + "," + lng + ",18z";
+            try {
+                mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                currentLatitude = mLastLocation.getLatitude();
+                currentLongitude = mLastLocation.getLongitude();
+                location = " https://www.google.com/maps/@" + currentLatitude + "," + currentLongitude + ",18z";
+
+            } catch (Exception e) {
+                Log.d(LOG_TAG, "Exception: " + e);
+                location = "";
+            }
 
             Bitmap icon = BitmapFactory.decodeResource(getResources(),
                     R.drawable.albergue_1);
@@ -417,22 +497,19 @@ public class MapsActivity extends AppCompatActivity
         // Llama a SettingsActivity
         if (id == R.id.action_settings) {
             startActivity(new Intent(MapsActivity.this, SettingsActivity.class));
-            return true;
         }
 
         if (id == R.id.action_intro) {
             startActivity(new Intent(MapsActivity.this, IntroActivity.class));
-            return true;
+            finish();
         }
 
         if (id == R.id.about) {
             startActivity(new Intent(MapsActivity.this, AboutMActivity.class));
-            return true;
         }
 
         if (id == R.id.about_zecovery) {
             startActivity(new Intent(MapsActivity.this, AboutZeActivity.class));
-            return true;
         }
 
         if (id == R.id.resync) {

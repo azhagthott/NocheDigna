@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/purple_800"
+    android:background="@color/purple_600"
     tools:context="com.zecovery.android.nochedigna.intro.IntroFragment3">
 
     <RelativeLayout
