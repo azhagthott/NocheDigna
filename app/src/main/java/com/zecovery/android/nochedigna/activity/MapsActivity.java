@@ -79,7 +79,6 @@ public class MapsActivity extends AppCompatActivity
     private FloatingActionButton fabMapsCall;
 
     private ProgressBar mProgressBar;
-    private TextView totalAlbergues;
     private int mProgressStatus = 0;
 
     // Elementos del mapa
@@ -122,7 +121,6 @@ public class MapsActivity extends AppCompatActivity
             fabMapsShare = (FloatingActionButton) findViewById(R.id.fabShare);
             fabMapsCall = (FloatingActionButton) findViewById(R.id.fabCall);
 
-            totalAlbergues = (TextView) findViewById(R.id.totalAlbergues);
             mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
             // agrega fragment del mapa
@@ -169,12 +167,24 @@ public class MapsActivity extends AppCompatActivity
         } else {
             Log.d(LOG_TAG, "isGPSEnabled: true");
         }
+
+        if (!isNetworkEnabled(this)) {
+            Log.d(LOG_TAG, "isGPSEnabled: false");
+        } else {
+            Log.d(LOG_TAG, "isGPSEnabled: true");
+        }
     }
 
     private boolean isNetworkEnabled(Context c) {
-        ConnectivityManager cm = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
+        try {
+            ConnectivityManager cm = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            return activeNetwork.isConnectedOrConnecting();
+        } catch (Exception e) {
+            Log.d(LOG_TAG, "Exception: " + e);
+            alerDialog(this, "NETWORK");
+            return false;
+        }
     }
 
     private boolean isGPSEnabled(Context c) {
@@ -212,7 +222,7 @@ public class MapsActivity extends AppCompatActivity
             alert.setPositiveButton(getResources().getString(R.string.alert_positive), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
                     c.startActivity(intent);
                 }
             });

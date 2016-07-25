@@ -26,17 +26,6 @@
         android:id="@+id/include"
         layout="@layout/fragment_activity_maps" />
 
-    <TextView
-        android:id="@+id/totalAlbergues"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|right"
-        android:layout_weight="1"
-        android:text="@string/map_ui_total_albergues"
-        android:textSize="36sp"
-        app:layout_anchor="@+id/include"
-        app:layout_anchorGravity="bottom|left" />
-
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/fabMapsMenu"
         android:layout_width="match_parent"

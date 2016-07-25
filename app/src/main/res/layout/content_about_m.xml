@@ -23,19 +23,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:paddingTop="16dp"
                 android:layout_weight="8"
+                android:paddingTop="16dp"
                 android:text="@string/action_about"
                 android:textColor="@color/grey_800"
                 android:textSize="24sp" />
 
             <ImageView
-                android:paddingEnd="16dp"
-                android:paddingStart="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 android:layout_weight="1"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp"
                 android:src="@drawable/logo" />
 
 
@@ -59,11 +59,11 @@
                 android:textSize="24sp" />
 
             <ImageView
-                android:paddingEnd="16dp"
-                android:paddingStart="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp"
                 android:src="@drawable/logo_main" />
 
         </LinearLayout>
@@ -76,6 +76,18 @@
             android:text="@string/about_m"
             android:textColor="@color/grey_600"
             android:textSize="18sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_300"/>
+
+        <TextView
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:text="@string/about_m"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
