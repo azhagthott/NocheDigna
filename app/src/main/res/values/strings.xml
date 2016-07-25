@@ -73,6 +73,7 @@
     <!-- Permission CALL_PHONE-->
     <string name="permission_call_phone_require">Se requiere permiso para poder realizar llamados</string>
 
+
     <!-- Map UI -->
     <string name="map_ui_total_albergues">10</string>
     <string name="map_share_location">Compartir</string>
