@@ -88,6 +88,8 @@
 
     <string name="loading_data_dialog_title">Descargando datos</string>
     <string name="loading_data_dialog_message">Por favor espere mientras se descargan los datos de los albergues</string>
+    <string name="downloading_data_dialog_cancel">La descarga de datos ha sido cancelada</string>
+
 
 
     <!-- ScrollingView UI -->

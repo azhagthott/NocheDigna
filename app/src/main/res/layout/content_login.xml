@@ -25,7 +25,6 @@
 
         <Button
             android:id="@+id/buttonGoogleLogin"
-            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
@@ -39,7 +38,6 @@
 
         <Button
             android:id="@+id/buttonFacebookLogin"
-            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"

@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "286248143209-0jo2hppes43ciochri10hb2vjq044qsl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zecovery.android.nochedigna",
+            "certificate_hash": "1B566F60C871FD3A38E06E1BD0A4F459C1C8F0D9"
+          }
+        },
+        {
           "client_id": "286248143209-44j8ohrqdgstcp56hjlcmc2ue5ed80j6.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

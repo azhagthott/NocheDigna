@@ -21,13 +21,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -49,7 +46,9 @@ import com.zecovery.android.nochedigna.R;
 import com.zecovery.android.nochedigna.about.AboutMActivity;
 import com.zecovery.android.nochedigna.about.AboutZeActivity;
 import com.zecovery.android.nochedigna.albergue.Albergue;
+import com.zecovery.android.nochedigna.base.BaseActivity;
 import com.zecovery.android.nochedigna.data.FirebaseDataBaseHelper;
+import com.zecovery.android.nochedigna.data.LocalDataBaseHelper;
 import com.zecovery.android.nochedigna.intro.IntroActivity;
 
 import java.io.ByteArrayOutputStream;
@@ -58,10 +57,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class MapsActivity extends AppCompatActivity
+public class MapsActivity extends BaseActivity
         implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener {
 
-    // TAG para debug ejm: Log.d(LOG_TAG, "onMarkerClick: marker " + marker.getSnippet());
     private static final String LOG_TAG = MapsActivity.class.getName();
 
     // valor del permiso aceptado
@@ -77,9 +75,6 @@ public class MapsActivity extends AppCompatActivity
     private FloatingActionsMenu fabMaps;
     private FloatingActionButton fabMapsShare;
     private FloatingActionButton fabMapsCall;
-
-    private ProgressBar mProgressBar;
-    private int mProgressStatus = 0;
 
     // Elementos del mapa
     private GoogleMap mMap;
@@ -121,12 +116,9 @@ public class MapsActivity extends AppCompatActivity
             fabMapsShare = (FloatingActionButton) findViewById(R.id.fabShare);
             fabMapsCall = (FloatingActionButton) findViewById(R.id.fabCall);
 
-            mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
-
             // agrega fragment del mapa
             SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
             mapFragment.getMapAsync(this);
-
         }
     }
 
@@ -169,9 +161,9 @@ public class MapsActivity extends AppCompatActivity
         }
 
         if (!isNetworkEnabled(this)) {
-            Log.d(LOG_TAG, "isGPSEnabled: false");
+            Log.d(LOG_TAG, "isNetworkEnabled: false");
         } else {
-            Log.d(LOG_TAG, "isGPSEnabled: true");
+            Log.d(LOG_TAG, "isNetworkEnabled: true");
         }
     }
 
@@ -263,24 +255,9 @@ public class MapsActivity extends AppCompatActivity
                 }
             } else {
                 mMap.setMyLocationEnabled(true);
-                mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-                if (mLastLocation != null) {
-                    mLatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mLatLng, 8.0f);
-                    mMap.animateCamera(cameraUpdate);
-//                    mMap.animateCamera(CameraUpdateFactory.zoomTo(8.0f));
-                }
             }
         } else {
             mMap.setMyLocationEnabled(true);
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            if (mLastLocation != null) {
-                mLatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mLatLng, 8.0f);
-                mMap.animateCamera(cameraUpdate);
-//                mMap.animateCamera(CameraUpdateFactory.zoomTo(8.0f));
-
-            }
         }
 
         // deshabilito herramientas
@@ -295,6 +272,7 @@ public class MapsActivity extends AppCompatActivity
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
+
 
                 // Llamo ScrollinActivity
                 Intent intent = new Intent(MapsActivity.this, ScrollingActivity.class);
@@ -317,9 +295,8 @@ public class MapsActivity extends AppCompatActivity
 
                     if (mLastLocation != null) {
                         mLatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mLatLng, 8.0f);
+                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mLatLng, 14.0f);
                         mMap.animateCamera(cameraUpdate);
-//                        mMap.animateCamera(CameraUpdateFactory.zoomTo(8.0f));
                     }
 
                 } else {
@@ -504,29 +481,25 @@ public class MapsActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        // Llama a SettingsActivity
-        if (id == R.id.action_settings) {
-            startActivity(new Intent(MapsActivity.this, SettingsActivity.class));
+        switch (id) {
+            case R.id.action_settings:
+                startActivity(new Intent(MapsActivity.this, SettingsActivity.class));
+                break;
+            case R.id.action_intro:
+                startActivity(new Intent(MapsActivity.this, IntroActivity.class));
+                finish();
+                break;
+            case R.id.about:
+                startActivity(new Intent(MapsActivity.this, AboutMActivity.class));
+                break;
+            case R.id.about_zecovery:
+                startActivity(new Intent(MapsActivity.this, AboutZeActivity.class));
+                break;
+            case R.id.resync:
+                FirebaseDataBaseHelper fire = new FirebaseDataBaseHelper();
+                fire.getDataForLaunch(this);
+                break;
         }
-
-        if (id == R.id.action_intro) {
-            startActivity(new Intent(MapsActivity.this, IntroActivity.class));
-            finish();
-        }
-
-        if (id == R.id.about) {
-            startActivity(new Intent(MapsActivity.this, AboutMActivity.class));
-        }
-
-        if (id == R.id.about_zecovery) {
-            startActivity(new Intent(MapsActivity.this, AboutZeActivity.class));
-        }
-
-        if (id == R.id.resync) {
-            FirebaseDataBaseHelper firebaseDataBaseHelper = new FirebaseDataBaseHelper();
-            firebaseDataBaseHelper.getDataForLaunch(this);
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -551,7 +524,7 @@ public class MapsActivity extends AppCompatActivity
                 mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
                 if (mLastLocation != null) {
                     LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 14.0f);
                     mMap.animateCamera(cameraUpdate);
                 }
             }
@@ -561,7 +534,7 @@ public class MapsActivity extends AppCompatActivity
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (mLastLocation != null) {
                 LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 14.0f);
                 mMap.animateCamera(cameraUpdate);
             }
         }

@@ -43,10 +43,11 @@ import com.zecovery.android.nochedigna.R;
 import com.zecovery.android.nochedigna.activity.CreateAccountActivity;
 import com.zecovery.android.nochedigna.activity.MapsActivity;
 import com.zecovery.android.nochedigna.activity.SettingsActivity;
+import com.zecovery.android.nochedigna.base.BaseActivity;
 
 import java.util.Arrays;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener,
+public class LoginActivity extends BaseActivity implements View.OnClickListener,
         GoogleApiClient.OnConnectionFailedListener {
 
     private static final String LOG_TAG = LoginActivity.class.getName();
@@ -77,15 +78,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FacebookSdk.sdkInitialize(this);
         setContentView(R.layout.activity_login);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        sessionPreferences = preferences.getBoolean(SettingsActivity.KEY_PREF_LOGIN, true);
+        sessionPreferences = preferences.getBoolean(SettingsActivity.KEY_PREF_LOGIN, false);
 
-        // Google Login
+        // Init firebase auth
+        mAuth = FirebaseAuth.getInstance();
+
+        // Init Facebook login
+        FacebookSdk.sdkInitialize(this);
+
+        // Init Google Login
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -96,9 +102,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-
-        // Init firebase auth
-        mAuth = FirebaseAuth.getInstance();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -136,6 +139,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onError(FacebookException error) {
                 // En caso de error, envio error a Firebase
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.login_facebook_canceled), Toast.LENGTH_SHORT).show();
                 FirebaseCrash.log("FACEBOOK ERROR LOGIN: " + error);
             }
         });
@@ -161,11 +165,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onStart();
 
         if (sessionPreferences) {
-            Log.d(LOG_TAG, "user: " + user);
+
+            Log.d(LOG_TAG, "onStart: " + sessionPreferences);
+
             mAuth.addAuthStateListener(mAuthListener);
-            gotoMap();
         } else {
-            mAuth.addAuthStateListener(mAuthListener);
+            Log.d(LOG_TAG, "onStart: " + sessionPreferences);
         }
     }
 
@@ -316,35 +321,41 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View view) {
 
-        buttonCreateAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this, CreateAccountActivity.class));
-            }
-        });
+        int id = view.getId();
 
-        buttonLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(LOG_TAG, "buttonLogin - clicked!!!");
-                signInEmail(editTextEmail.getText().toString(), editTextPassword.getText().toString());
-            }
-        });
-
-        facebookLoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(LOG_TAG, "facebookLoginButton - clicked!!!");
-                facebookLogin();
-            }
-        });
-
-        googleLoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signIn();
-            }
-        });
+        switch (id) {
+            case R.id.buttonFacebookLogin:
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        facebookLogin();
+                    }
+                });
+                break;
+            case R.id.buttonGoogleLogin:
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        signIn();
+                    }
+                });
+                break;
+            case R.id.buttonLogin:
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        signInEmail(editTextEmail.getText().toString(), editTextPassword.getText().toString());
+                    }
+                });
+                break;
+            case R.id.buttonCreateAccount:
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        startActivity(new Intent(LoginActivity.this, CreateAccountActivity.class));
+                    }
+                });
+        }
     }
 
     @Override

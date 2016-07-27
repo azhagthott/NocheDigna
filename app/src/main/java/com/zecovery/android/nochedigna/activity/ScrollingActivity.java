@@ -22,9 +22,10 @@ import android.widget.Toast;
 import com.google.firebase.crash.FirebaseCrash;
 import com.zecovery.android.nochedigna.R;
 import com.zecovery.android.nochedigna.albergue.Albergue;
+import com.zecovery.android.nochedigna.base.BaseActivity;
 import com.zecovery.android.nochedigna.data.LocalDataBaseHelper;
 
-public class ScrollingActivity extends AppCompatActivity {
+public class ScrollingActivity extends BaseActivity {
 
     private static final String LOG_TAG = ScrollingActivity.class.getName();
     private static final int PERMISSION_REQUEST_CALL = 1;

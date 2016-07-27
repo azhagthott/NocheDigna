@@ -8,8 +8,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.zecovery.android.nochedigna.R;
+import com.zecovery.android.nochedigna.base.BaseActivity;
 
-public class PasswordRecoveryActivity extends AppCompatActivity {
+public class PasswordRecoveryActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

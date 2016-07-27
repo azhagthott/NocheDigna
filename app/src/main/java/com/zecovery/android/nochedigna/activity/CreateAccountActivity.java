@@ -20,9 +20,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.crash.FirebaseCrash;
 import com.zecovery.android.nochedigna.R;
+import com.zecovery.android.nochedigna.base.BaseActivity;
 import com.zecovery.android.nochedigna.login.LoginActivity;
 
-public class CreateAccountActivity extends AppCompatActivity implements View.OnClickListener {
+public class CreateAccountActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String LOG_TAG = LoginActivity.class.getName();
 

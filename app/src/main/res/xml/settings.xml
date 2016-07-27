@@ -3,19 +3,11 @@
 
     <PreferenceCategory android:title="@string/settings_category_session">
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:icon="@drawable/ic_person_settings"
             android:key="pref_key_login"
             android:summary="@string/settings_summary_session"
             android:title="@string/settings_title_session" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/settings_category_data">
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:icon="@drawable/ic_data_usage_settings"
-            android:key="pref_key_data"
-            android:summary="@string/settings_summary_data"
-            android:title="@string/settings_title_data" />
-    </PreferenceCategory>
-
+    
 </PreferenceScreen>

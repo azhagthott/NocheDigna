@@ -8,8 +8,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.zecovery.android.nochedigna.R;
+import com.zecovery.android.nochedigna.base.BaseActivity;
 
-public class AboutZeActivity extends AppCompatActivity {
+public class AboutZeActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
