@@ -1,82 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content_create_accountctivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_vertical"
     tools:context="com.zecovery.android.nochedigna.activity.CreateAccountActivity"
     tools:showIn="@layout/activity_create_account_activity">
 
-
-    <EditText
-        android:id="@+id/editTextEmail"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="192dp"
-        android:ems="10"
-        android:hint="@string/login_email"
-        android:inputType="textEmailAddress"
-        app:layout_constraintLeft_toLeftOf="@+id/content_create_accountctivity"
-        app:layout_constraintRight_toRightOf="@+id/content_create_accountctivity"
-        app:layout_constraintTop_toTopOf="@+id/content_create_accountctivity" />
+        android:focusableInTouchMode="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/editTextPassword"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:hint="@string/login_password"
-        android:inputType="textPassword"
-        app:layout_constraintBottom_toBottomOf="@+id/content_create_accountctivity"
-        app:layout_constraintLeft_toLeftOf="@+id/content_create_accountctivity"
-        app:layout_constraintRight_toRightOf="@+id/content_create_accountctivity"
-        app:layout_constraintTop_toBottomOf="@+id/editTextEmail"
-        app:layout_constraintVertical_bias="0.0" />
+        <TextView
+            android:id="@+id/textViewMain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
+            android:padding="16dp"
+            android:text="@string/create_account_title" />
 
-    <Button
-        android:id="@+id/buttonCreateAccount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/button_create_account"
-        app:layout_constraintBottom_toBottomOf="@+id/content_create_accountctivity"
-        app:layout_constraintLeft_toLeftOf="@+id/content_create_accountctivity"
-        app:layout_constraintRight_toRightOf="@+id/content_create_accountctivity"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPassword"
-        app:layout_constraintVertical_bias="0.22000003" />
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/textViewMain"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="88dp"
-        android:text="@string/create_account_title"
-        app:layout_constraintBottom_toTopOf="@+id/editTextEmail"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="@+id/content_create_accountctivity"
-        app:layout_constraintRight_toRightOf="@+id/content_create_accountctivity"
-        app:layout_constraintTop_toTopOf="@+id/content_create_accountctivity" />
+            <EditText
+                android:id="@+id/editTextEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="192dp"
+                android:ems="10"
+                android:hint="@string/login_email"
+                android:inputType="textEmailAddress" />
 
-</android.support.constraint.ConstraintLayout>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/editTextPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:ems="10"
+                android:hint="@string/login_password"
+                android:inputType="textPassword" />
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:id="@+id/buttonCreateAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/button_create_account" />
+
+    </LinearLayout>
+
+</RelativeLayout>

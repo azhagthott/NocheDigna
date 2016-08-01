@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!--
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
@@ -21,7 +20,6 @@
     <color name="red_google">#DD4B39</color>
     <color name="blue_facebook">#3B5998</color>
     <color name="blue_twitter">#4099FF</color>
-
 
     <color name="black_semi_transparent">#B2000000</color>
     <color name="background">#e5e5e5</color>

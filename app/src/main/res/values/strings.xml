@@ -9,22 +9,16 @@
 
     <!-- APP Intro UI-->
     <string name="app_intro_skip">Introducción omitida</string>
-
     <string name="app_intro_fragment_1_title">Programa Noche Digna</string>
     <string name="app_intro_fragment_1_description">Programa Noche Digna del Ministerio de Desarrollo Social</string>
-
     <string name="app_intro_fragment_2_title">Localización</string>
     <string name="app_intro_fragment_2_description">La aplicación Programa Noche Digna requiere permiso para poder conocer tu ubicación en el mapa</string>
-
     <string name="app_intro_fragment_3_title">Llamar</string>
     <string name="app_intro_fragment_3_description">Para poder comunicarte con la mesa de ayuda del Ministerio de Desarrollo Social o con los distintos albergues, debes autorizar a la aplicación para hacer llamados</string>
-
     <string name="app_intro_fragment_4_title">Compartir</string>
     <string name="app_intro_fragment_4_description">Si quieres lo puedes compartir en tu red social favorita</string>
-
     <string name="app_intro_fragment_5_title">Gracias!</string>
     <string name="app_intro_fragment_5_description">ya puedes empezar</string>
-
 
     <!-- Settings UI-->
     <string name="action_settings">Preferencias</string>
@@ -44,7 +38,7 @@
     <string name="text_view_suggest_login">Puedes iniciar sesión utilizando tu cuenta de:</string>
     <string name="text_view_create_account">Registrate</string>
     <string name="text_view_recover_password">¿Olvidaste tu contraseña?</string>
-    <string name="error_login">Oops! esto no debió ocurrir</string>
+    <string name="error_login">No se pudo iniciar sesión</string>
     <string name="login_email">correo electrónico</string>
     <string name="login_password">contraseña</string>
     <string name="login_button_sign_in">entrar</string>
@@ -65,65 +59,48 @@
     <!-- Permission WRITE_EXTERNAL_STORAGE-->
     <string name="permission_write_external_stroge_require">Se requiere permiso para compartir imágenes</string>
 
-    <!-- Permission ACCESS_FINE_LOCATION-->
-    <!-- Permission ACCESS_COARSE_LOCATION-->
+    <!-- Permission ACCESS_FINE_LOCATION - ACCESS_COARSE_LOCATION-->
     <string name="gps_require">El GPS debe estar activado</string>
     <string name="error_permission_map">El uso de GPS es requerido</string>
 
     <!-- Permission CALL_PHONE-->
     <string name="permission_call_phone_require">Se requiere permiso para poder realizar llamados</string>
 
-
     <!-- Map UI -->
     <string name="map_ui_total_albergues">10</string>
     <string name="map_share_location">Compartir</string>
     <string name="alert_positive">Activar</string>
     <string name="alert_negative">Cancelar</string>
-
     <string name="alert_gps_title">¿Está apagado el GPS?</string>
     <string name="alert_gps_message">Para que esta aplicación funcione correctamente se sugiere tener encendido el GPS, \n\n ¿desea encederlo ahora?</string>
-
     <string name="alert_network_title">Red de datos</string>
     <string name="alert_network_message">Esta aplicación requiere el uso de red de datos, \n\n ¿desea activarlo?</string>
-
     <string name="loading_data_dialog_title">Descargando datos</string>
     <string name="loading_data_dialog_message">Por favor espere mientras se descargan los datos de los albergues</string>
     <string name="downloading_data_dialog_cancel">La descarga de datos ha sido cancelada</string>
 
-
-
     <!-- ScrollingView UI -->
     <string name="camas_disponibles_lbl">Camas disponibles: </string>v
     <string name="camas_disponibles_text">20</string>
-
     <string name="cobertura_lbl">Cobertura: </string>v
     <string name="cobertura_text">30</string>
-
     <string name="tipo_lbl">Tipo: </string>v
     <string name="tipo_text">Centro de Día</string>
-
     <string name="region_text">Region Metropolitana</string>v
     <string name="comuna_text">San Miguel</string>v
     <string name="direccion_text">Llico #959</string>
-
     <string name="telefono_lbl">telefono: </string>
     <string name="telefono_text">+56 22 5223830</string>
-
     <string name="email_lbl">email: </string>
     <string name="email_text">info@zecovery.com</string>
-
     <string name="make_call">¿Desea llamar?</string>
     <string name="confirm_call">Hacer llamado</string>
     <string name="error_calling">Ha ocurrido un error al intentar realizar el llamado</string>
 
     <!-- About UI Ministerio/Ze -->
     <string name="title_activity_about_m">Ministerio de Desarrollo Social</string>
-
     <string name="title_about_noche_digna">Programa Noche Digna</string>
-
     <string name="about_m">El programa Noche Digna es un sistema público de centros de atención para personas en situación de calle orientado a la protección de la vida y a la superación de estas personas. Ofrece alternativas de alojamiento temporal a las personas en situación de calle.</string>
-
-
     <string name="title_activity_about_ze">Zecovery</string>
 
    <string name="about_ze">El miércoles 1 de junio se llevó a cabo la presentación de la nueva marca para nuestra empresa. EXEC desde ahora es ZECOVERY. Empresa que suma todos los talentos y experiencia recabada en estos años y los une a nuevos partner y nuevos talentos con los que apoyaremos a nuestros clientes en sus desafíos y proyectos, que apoyarán a sus comunidades de usuarios. \n\n
@@ -131,9 +108,6 @@
        Queremos crecer junto a nuestros clientes, y evolucionar ofreciendo lo mejor de los recursos TI a su disposición para lograr soluciones únicas y pioneras en el mercado.\n\n
        De la misma forma, Jenny Zegarra, Gerente Comercial de Zecovery afirmó “Nuestro equipo se compromete a generar soluciones simples e inteligentes que ofrezcan valor a sus comunidades de usuarios a nivel nacional e internacional”.
    </string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
 

@@ -66,7 +66,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     private FirebaseUser user;
     private EditText editTextEmail;
     private EditText editTextPassword;
-    private Button buttonLogin;
+    private Button buttonLoginEmailAndPassword;
 
     //Google Login
     private GoogleApiClient mGoogleApiClient;
@@ -147,17 +147,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
 
+        facebookLoginButton = (Button) findViewById(R.id.buttonFacebookLogin);
+        googleLoginButton = (Button) findViewById(R.id.buttonGoogleLogin);
+        buttonLoginEmailAndPassword = (Button) findViewById(R.id.buttonLoginEmailAndPassword);
         buttonCreateAccount = (Button) findViewById(R.id.buttonCreateAccount);
 
-        buttonLogin = (Button) findViewById(R.id.buttonLogin);
-        googleLoginButton = (Button) findViewById(R.id.buttonGoogleLogin);
-        facebookLoginButton = (Button) findViewById(R.id.buttonFacebookLogin);
-
-        buttonCreateAccount.setOnClickListener(this);
-
-        buttonLogin.setOnClickListener(this);
         googleLoginButton.setOnClickListener(this);
         facebookLoginButton.setOnClickListener(this);
+        buttonLoginEmailAndPassword.setOnClickListener(this);
+        buttonCreateAccount.setOnClickListener(this);
     }
 
     @Override
@@ -231,7 +229,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 });
     }
 
-    private void signIn() {
+    public void googleLogin() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -264,7 +262,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 });
     }
 
-    private void signInEmail(String email, String password) {
+    private void emailAndPasswordLogin(String email, String password) {
 
         Log.d(LOG_TAG, "signIn:" + email);
         if (!validateForm()) {
@@ -325,37 +323,25 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
         switch (id) {
             case R.id.buttonFacebookLogin:
-                view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        facebookLogin();
-                    }
-                });
+                facebookLogin();
                 break;
+
             case R.id.buttonGoogleLogin:
-                view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        signIn();
-                    }
-                });
+                googleLogin();
                 break;
-            case R.id.buttonLogin:
-                view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        signInEmail(editTextEmail.getText().toString(), editTextPassword.getText().toString());
-                    }
-                });
+
+            case R.id.buttonLoginEmailAndPassword:
+                emailAndPasswordLogin(editTextEmail.getText().toString(), editTextPassword.getText().toString());
                 break;
+
             case R.id.buttonCreateAccount:
-                view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        startActivity(new Intent(LoginActivity.this, CreateAccountActivity.class));
-                    }
-                });
+                createAccount();
+                break;
         }
+    }
+
+    private void createAccount() {
+        startActivity(new Intent(LoginActivity.this, CreateAccountActivity.class));
     }
 
     @Override
@@ -363,9 +349,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         FirebaseCrash.log("google login connection failed!!!" + connectionResult);
     }
 
-
     private void facebookLogin() {
-        //LoginManager.getInstance().logOut();
         LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
     }
 

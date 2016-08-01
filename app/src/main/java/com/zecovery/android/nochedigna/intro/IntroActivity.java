@@ -32,12 +32,13 @@ public class IntroActivity extends AppIntro {
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
-        addSlide(new IntroFragment1());
+        addSlide(new IntroFragment1()); // Init
         addSlide(new IntroFragment2()); // Location
         addSlide(new IntroFragment3()); // Call
         addSlide(new IntroFragment4()); // Share
-        addSlide(new IntroFragment5());
+        addSlide(new IntroFragment5()); // Done
 
+        showSkipButton(false);
         setSwipeLock(true);
         showStatusBar(false);
         setDepthAnimation();

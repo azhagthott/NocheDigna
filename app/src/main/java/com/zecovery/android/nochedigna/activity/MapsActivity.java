@@ -21,6 +21,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -88,10 +89,6 @@ public class MapsActivity extends BaseActivity
     // Ultima ubicacion conocida
     protected Location mLastLocation;
 
-    // Albergue
-    private Albergue albergue;
-    private ArrayList<Albergue> arrayList;
-
     // data base
     private FirebaseDataBaseHelper firebaseDataBaseHelper;
 
@@ -99,6 +96,9 @@ public class MapsActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         //DB - Llamo a la db
         firebaseDataBaseHelper = new FirebaseDataBaseHelper();
@@ -119,6 +119,7 @@ public class MapsActivity extends BaseActivity
             // agrega fragment del mapa
             SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
             mapFragment.getMapAsync(this);
+
         }
     }
 

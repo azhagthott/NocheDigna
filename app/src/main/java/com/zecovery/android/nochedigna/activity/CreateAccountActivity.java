@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -66,7 +65,7 @@ public class CreateAccountActivity extends BaseActivity implements View.OnClickL
         };
     }
 
-    private void createAccount(String email, String password) {
+    public void createAccount(String email, String password) {
         Log.d(LOG_TAG, "createAccount:" + email);
         if (!validateForm()) {
             return;
@@ -139,13 +138,8 @@ public class CreateAccountActivity extends BaseActivity implements View.OnClickL
 
     @Override
     public void onClick(View view) {
-        buttonCreateAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(LOG_TAG, "textViewCreateAccount - clicked!!!");
-                FirebaseCrash.log("account create!");
-                createAccount(editTextEmail.getText().toString(), editTextPassword.getText().toString());
-            }
-        });
+        Log.d(LOG_TAG, "textViewCreateAccount - clicked!!!");
+        FirebaseCrash.log("account create!");
+        createAccount(editTextEmail.getText().toString(), editTextPassword.getText().toString());
     }
 }

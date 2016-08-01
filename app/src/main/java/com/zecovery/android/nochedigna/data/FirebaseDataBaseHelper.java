@@ -3,9 +3,6 @@ package com.zecovery.android.nochedigna.data;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteException;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -20,7 +17,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zecovery.android.nochedigna.R;
-import com.zecovery.android.nochedigna.activity.SettingsActivity;
 import com.zecovery.android.nochedigna.albergue.Albergue;
 
 import java.util.ArrayList;

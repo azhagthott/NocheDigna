@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:background="@drawable/blur_1"
     tools:context="com.zecovery.android.nochedigna.activity.LaunchScreenActivity">
 
     <include layout="@layout/content_launch_screen" />
