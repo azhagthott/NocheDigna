@@ -9,6 +9,7 @@
     tools:showIn="@layout/activity_login">
 
     <TextView
+        android:fontFamily="sans-serif-light"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
@@ -75,6 +76,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="16dp"
+                android:fontFamily="sans-serif-light"
                 android:hint="@string/login_email"
                 android:inputType="textEmailAddress" />
         </android.support.design.widget.TextInputLayout>
@@ -90,6 +92,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="16dp"
+                android:fontFamily="sans-serif-light"
                 android:hint="@string/login_password"
                 android:inputType="textPassword" />
         </android.support.design.widget.TextInputLayout>
@@ -100,6 +103,7 @@
             android:gravity="center_horizontal">
 
             <Button
+                android:fontFamily="sans-serif-light"
                 android:id="@+id/buttonLoginEmailAndPassword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
