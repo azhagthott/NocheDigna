@@ -96,21 +96,24 @@ public class FirebaseDataBaseHelper {
 
                     // Vaido la cantidad de camas de los albergues
                     // si es mayor a cero, se dibuja verde
-                    if (Integer.valueOf(camasDisponibles) > 0) {
-                        map.addMarker(new MarkerOptions()
-                                .position(new LatLng(latitude, longitude))
-                                .title(ejecutor)
-                                .snippet(id)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                        );
-                        // si no, se dibuja rojo
-                    } else {
-                        map.addMarker(new MarkerOptions()
-                                .position(new LatLng(latitude, longitude))
-                                .title(ejecutor)
-                                .snippet(id)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                        );
+
+                    if (latitude != 0) {
+                        if (Integer.valueOf(camasDisponibles) > 0) {
+                            map.addMarker(new MarkerOptions()
+                                    .position(new LatLng(latitude, longitude))
+                                    .title(ejecutor)
+                                    .snippet(id)
+                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                            );
+                            // si no, se dibuja rojo
+                        } else {
+                            map.addMarker(new MarkerOptions()
+                                    .position(new LatLng(latitude, longitude))
+                                    .title(ejecutor)
+                                    .snippet(id)
+                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                            );
+                        }
                     }
                 }
             }

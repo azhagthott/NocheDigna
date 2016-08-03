@@ -99,7 +99,7 @@ public class ScrollingActivity extends BaseActivity {
                             }
                         })
                         .setDuration(Snackbar.LENGTH_LONG)
-                        .setActionTextColor(getResources().getColor(R.color.red_400))
+                        .setActionTextColor(getResources().getColor(R.color.red_300))
                         .show();
             }
         });
