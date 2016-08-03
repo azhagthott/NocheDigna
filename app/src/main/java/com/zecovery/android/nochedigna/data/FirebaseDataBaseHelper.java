@@ -16,11 +16,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.maps.android.clustering.ClusterManager;
 import com.zecovery.android.nochedigna.R;
 import com.zecovery.android.nochedigna.albergue.Albergue;
+import com.zecovery.android.nochedigna.albergue.AlbergueCluster;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by francisco on 20-07-16.
@@ -32,11 +36,17 @@ public class FirebaseDataBaseHelper {
 
     //settings
     private ProgressDialog loading;
+    private ClusterManager<AlbergueCluster> mClusterManager;
+
 
     public FirebaseDataBaseHelper() {
+
     }
 
     public List<Albergue> getDataFromFirebase(final GoogleMap map, final Context context) {
+
+
+        mClusterManager = new ClusterManager<>(context, map);
 
         loading = ProgressDialog.show(context,
                 context.getResources().getString(R.string.loading_data_dialog_title),
@@ -97,7 +107,8 @@ public class FirebaseDataBaseHelper {
                     // Vaido la cantidad de camas de los albergues
                     // si es mayor a cero, se dibuja verde
 
-                    if (latitude != 0) {
+                    if (latitude != 0 || longitude != 0) {
+
                         if (Integer.valueOf(camasDisponibles) > 0) {
                             map.addMarker(new MarkerOptions()
                                     .position(new LatLng(latitude, longitude))
@@ -114,6 +125,7 @@ public class FirebaseDataBaseHelper {
                                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                             );
                         }
+
                     }
                 }
             }

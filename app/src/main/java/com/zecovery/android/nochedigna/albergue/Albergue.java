@@ -1,5 +1,7 @@
 package com.zecovery.android.nochedigna.albergue;
 
+import com.google.maps.android.clustering.ClusterItem;
+
 /**
  * Created by fran on 10-07-16.
  */

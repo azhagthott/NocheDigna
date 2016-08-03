@@ -43,10 +43,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.firebase.crash.FirebaseCrash;
+import com.google.maps.android.clustering.Cluster;
+import com.google.maps.android.clustering.ClusterManager;
 import com.zecovery.android.nochedigna.R;
 import com.zecovery.android.nochedigna.about.AboutMActivity;
 import com.zecovery.android.nochedigna.about.AboutZeActivity;
 import com.zecovery.android.nochedigna.albergue.Albergue;
+import com.zecovery.android.nochedigna.albergue.AlbergueCluster;
 import com.zecovery.android.nochedigna.base.BaseActivity;
 import com.zecovery.android.nochedigna.data.FirebaseDataBaseHelper;
 import com.zecovery.android.nochedigna.data.LocalDataBaseHelper;
@@ -81,6 +84,8 @@ public class MapsActivity extends BaseActivity
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
 
+    private ClusterManager<AlbergueCluster> mClusterManager;
+
     // Manejo de ubicacion del usuario
     private LatLng mLatLng;
     private double currentLatitude;
@@ -102,8 +107,11 @@ public class MapsActivity extends BaseActivity
 
         //DB - Llamo a la db
         firebaseDataBaseHelper = new FirebaseDataBaseHelper();
+        setupMap();
 
-        // Instacia GoogleApiClient
+    }
+
+    private void setupMap() {
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
@@ -119,7 +127,6 @@ public class MapsActivity extends BaseActivity
             // agrega fragment del mapa
             SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
             mapFragment.getMapAsync(this);
-
         }
     }
 
@@ -266,10 +273,14 @@ public class MapsActivity extends BaseActivity
         // habilito multitouch y otras funciones
         mMap.getUiSettings().setAllGesturesEnabled(true);
 
+
+        mMap.setOnCameraChangeListener(mClusterManager);
+        mMap.setOnMarkerClickListener(mClusterManager);
+
+
         // Traigo los datos desde Firebase
         firebaseDataBaseHelper.getDataFromFirebase(mMap, this);
 
-        // Muestra detalles de los albergues al presionar en el infoWindows
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
@@ -281,6 +292,8 @@ public class MapsActivity extends BaseActivity
                 startActivity(intent);
             }
         });
+
+
     }
 
     @Override
