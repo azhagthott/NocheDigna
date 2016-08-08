@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.storage.StreamDownloadTask;
@@ -22,7 +24,7 @@ import com.zecovery.android.nochedigna.login.LoginActivity;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class LaunchScreenActivity extends BaseActivity {
+public class LaunchScreenActivity extends AppCompatActivity {
 
     private static final long SPLASH_SCREEN_DELAY = 3000;
     private static final String LOG_TAG = LaunchScreenActivity.class.getName();
@@ -36,19 +38,23 @@ public class LaunchScreenActivity extends BaseActivity {
         setContentView(R.layout.activity_launch_screen);
 
         ProgressBar progressBarLauncher = (ProgressBar) findViewById(R.id.progressBarLauncher);
-
-        try {
-            FirebaseDataBaseHelper firebaseDataBaseHelper = new FirebaseDataBaseHelper();
-            firebaseDataBaseHelper.getDataForLaunch(this);
-            progressBarLauncher.setVisibility(View.VISIBLE);
-        } catch (Exception e) {
-            progressBarLauncher.setVisibility(View.GONE);
-            FirebaseCrash.logcat(Log.ERROR, LOG_TAG, "NPE caught");
-            FirebaseCrash.report(e);
-        }
-
         preferences = getSharedPreferences("com.zecovery.android.nochedigna", MODE_PRIVATE);
         final Boolean firstRun = preferences.getBoolean("first_run", true);
+
+        /*Revisa si Google Play Services está instalado*/
+        isGooglePlayServicesAvailable();
+
+
+        try {
+            //FirebaseDataBaseHelper firebaseDataBaseHelper = new FirebaseDataBaseHelper();
+            //firebaseDataBaseHelper.getDataForLaunch(this);
+            progressBarLauncher.setVisibility(View.VISIBLE);
+        } catch (Exception e) {
+            //progressBarLauncher.setVisibility(View.GONE);
+            //FirebaseCrash.logcat(Log.ERROR, LOG_TAG, "NPE caught");
+            //FirebaseCrash.report(e);
+        }
+
 
         TimerTask task = new TimerTask() {
             @Override
@@ -74,5 +80,18 @@ public class LaunchScreenActivity extends BaseActivity {
         if (preferences.getBoolean("first_run", true)) {
             preferences.edit().putBoolean("first_run", false).apply();
         }
+    }
+
+    public boolean isGooglePlayServicesAvailable() {
+
+        GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
+        int status = googleApiAvailability.isGooglePlayServicesAvailable(this);
+        if (status != ConnectionResult.SUCCESS) {
+            if (googleApiAvailability.isUserResolvableError(status)) {
+                googleApiAvailability.getErrorDialog(this, status, 2404).show();
+            }
+            return false;
+        }
+        return true;
     }
 }

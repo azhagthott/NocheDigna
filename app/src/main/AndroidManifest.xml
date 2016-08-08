@@ -42,8 +42,7 @@
 
         <activity
             android:name=".activity.MapsActivity"
-            android:label="@string/title_activity_maps"
-            android:screenOrientation="portrait" />
+            android:label="@string/title_activity_maps" />
 
         <activity
             android:name=".activity.ScrollingActivity"
@@ -61,10 +60,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zecovery.android.nochedigna.activity.MapsActivity" />
         </activity>
-        <activity
-            android:name=".activity.TestActivity"
-            android:label="@string/title_activity_test"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.CreateAccountActivity"
             android:label="@string/title_activity_create_accountctivity"

@@ -103,12 +103,19 @@ public class MapsActivity extends BaseActivity
         setContentView(R.layout.activity_maps);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        Toolbar toolbarLandScapeMode = (Toolbar) findViewById(R.id.toolbarLandScapeMode);
+
+        if (getScreenOrientation(this) == PORTRAIT_MODE) {
+            setSupportActionBar(toolbar);
+        } else if (getScreenOrientation(this) == LANDSCAPE_MODE) {
+            setSupportActionBar(toolbarLandScapeMode);
+        } else {
+            setSupportActionBar(toolbar);
+        }
 
         //DB - Llamo a la db
         firebaseDataBaseHelper = new FirebaseDataBaseHelper();
         setupMap();
-
     }
 
     private void setupMap() {
