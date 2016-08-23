@@ -12,7 +12,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -120,7 +119,7 @@ public class ScrollingActivity extends BaseActivity {
                 }
             } else {
                 try {
-                    String phone = "+56225223830";
+                    String phone = CALL_CENTER_PHONE_NUMBER;
                     Intent callIntent = new Intent(Intent.ACTION_DIAL);
                     callIntent.setData(Uri.parse("tel:" + phone));
                     startActivity(callIntent);
@@ -133,7 +132,7 @@ public class ScrollingActivity extends BaseActivity {
             }
         } else {
             try {
-                String phone = "+56225223830";
+                String phone = CALL_CENTER_PHONE_NUMBER;
                 Intent callIntent = new Intent(Intent.ACTION_DIAL);
                 callIntent.setData(Uri.parse("tel:" + phone));
                 startActivity(callIntent);

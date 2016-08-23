@@ -28,6 +28,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.common.ConnectionResult;
@@ -43,34 +47,28 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.firebase.crash.FirebaseCrash;
-import com.google.maps.android.clustering.Cluster;
-import com.google.maps.android.clustering.ClusterManager;
 import com.zecovery.android.nochedigna.R;
 import com.zecovery.android.nochedigna.about.AboutMActivity;
 import com.zecovery.android.nochedigna.about.AboutZeActivity;
-import com.zecovery.android.nochedigna.albergue.Albergue;
-import com.zecovery.android.nochedigna.albergue.AlbergueCluster;
 import com.zecovery.android.nochedigna.base.BaseActivity;
+import com.zecovery.android.nochedigna.data.AlbergueDataRequest;
+import com.zecovery.android.nochedigna.data.CustomJsonRequest;
 import com.zecovery.android.nochedigna.data.FirebaseDataBaseHelper;
-import com.zecovery.android.nochedigna.data.LocalDataBaseHelper;
 import com.zecovery.android.nochedigna.intro.IntroActivity;
+
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class MapsActivity extends BaseActivity
         implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener {
 
-    private static final String LOG_TAG = MapsActivity.class.getName();
-
     // valor del permiso aceptado
     private static final int PERMISSION_REQUEST_CODE_LOCATION = 1;
     private static final int PERMISSION_REQUEST_CALL = 1;
-
-    private static final String CALL_CENTER_PHONE_NUMBER = "800104777";
 
     // Tiempo para matar la app
     private static final long AUTO_DESTROY = 3000;
@@ -84,8 +82,6 @@ public class MapsActivity extends BaseActivity
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
 
-    private ClusterManager<AlbergueCluster> mClusterManager;
-
     // Manejo de ubicacion del usuario
     private LatLng mLatLng;
     private double currentLatitude;
@@ -97,10 +93,15 @@ public class MapsActivity extends BaseActivity
     // data base
     private FirebaseDataBaseHelper firebaseDataBaseHelper;
 
+    private CustomJsonRequest customJsonRequest;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        //DB - Llamo a la db
+        firebaseDataBaseHelper = new FirebaseDataBaseHelper();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         Toolbar toolbarLandScapeMode = (Toolbar) findViewById(R.id.toolbarLandScapeMode);
@@ -113,8 +114,6 @@ public class MapsActivity extends BaseActivity
             setSupportActionBar(toolbar);
         }
 
-        //DB - Llamo a la db
-        firebaseDataBaseHelper = new FirebaseDataBaseHelper();
         setupMap();
     }
 
@@ -152,6 +151,8 @@ public class MapsActivity extends BaseActivity
     @Override
     public void onResume() {
         super.onResume();
+
+
         // Se habilita la opcion de compartir solo una vez que se ha cargado el mapa
         fabMapsShare.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -170,15 +171,15 @@ public class MapsActivity extends BaseActivity
 
         if (!isGPSEnabled(this)) {
             alerDialog(this, "GPS");
-            Log.d(LOG_TAG, "isGPSEnabled: false");
+            Log.d(TAG, "isGPSEnabled: false");
         } else {
-            Log.d(LOG_TAG, "isGPSEnabled: true");
+            Log.d(TAG, "isGPSEnabled: true");
         }
 
         if (!isNetworkEnabled(this)) {
-            Log.d(LOG_TAG, "isNetworkEnabled: false");
+            Log.d(TAG, "isNetworkEnabled: false");
         } else {
-            Log.d(LOG_TAG, "isNetworkEnabled: true");
+            Log.d(TAG, "isNetworkEnabled: true");
         }
     }
 
@@ -188,7 +189,7 @@ public class MapsActivity extends BaseActivity
             NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
             return activeNetwork.isConnectedOrConnecting();
         } catch (Exception e) {
-            Log.d(LOG_TAG, "Exception: " + e);
+            Log.d(TAG, "Exception: " + e);
             alerDialog(this, "NETWORK");
             return false;
         }
@@ -251,6 +252,27 @@ public class MapsActivity extends BaseActivity
         // creo objeto mapa
         mMap = googleMap;
 
+        customJsonRequest = new CustomJsonRequest(
+                Request.Method.GET,
+                JSON_URL,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject jsonObject) {
+                        AlbergueDataRequest request = new AlbergueDataRequest(jsonObject);
+                        request.getDataForMap(mMap, getApplicationContext());
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d(TAG, "onErrorResponse: " + error);
+                    }
+                });
+
+        customJsonRequest.setPriority(Request.Priority.HIGH);
+        Volley.newRequestQueue(this).add(customJsonRequest);
+
         // Tipo de mapa = Normal
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
@@ -280,18 +302,9 @@ public class MapsActivity extends BaseActivity
         // habilito multitouch y otras funciones
         mMap.getUiSettings().setAllGesturesEnabled(true);
 
-
-        mMap.setOnCameraChangeListener(mClusterManager);
-        mMap.setOnMarkerClickListener(mClusterManager);
-
-
-        // Traigo los datos desde Firebase
-        firebaseDataBaseHelper.getDataFromFirebase(mMap, this);
-
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-
 
                 // Llamo ScrollinActivity
                 Intent intent = new Intent(MapsActivity.this, ScrollingActivity.class);
@@ -299,8 +312,6 @@ public class MapsActivity extends BaseActivity
                 startActivity(intent);
             }
         });
-
-
     }
 
     @Override
@@ -353,7 +364,7 @@ public class MapsActivity extends BaseActivity
                 } catch (Exception e) {
                     Toast.makeText(MapsActivity.this,
                             getResources().getString(R.string.error_calling), Toast.LENGTH_SHORT).show();
-                    Log.d(LOG_TAG, "Exception: " + e);
+                    Log.d(TAG, "Exception: " + e);
                     FirebaseCrash.log("Exception" + e);
                 }
             }
@@ -365,7 +376,7 @@ public class MapsActivity extends BaseActivity
             } catch (Exception e) {
                 Toast.makeText(MapsActivity.this,
                         getResources().getString(R.string.error_calling), Toast.LENGTH_SHORT).show();
-                Log.d(LOG_TAG, "Exception: " + e);
+                Log.d(TAG, "Exception: " + e);
                 FirebaseCrash.log("Exception" + e);
             }
         }
@@ -403,7 +414,7 @@ public class MapsActivity extends BaseActivity
                     location = " https://www.google.com/maps/@" + currentLatitude + "," + currentLongitude + ",18z";
 
                 } catch (Exception e) {
-                    Log.d(LOG_TAG, "Exception: " + e);
+                    Log.d(TAG, "Exception: " + e);
 
                     location = "";
 
@@ -452,7 +463,7 @@ public class MapsActivity extends BaseActivity
                 location = " https://www.google.com/maps/@" + currentLatitude + "," + currentLongitude + ",18z";
 
             } catch (Exception e) {
-                Log.d(LOG_TAG, "Exception: " + e);
+                Log.d(TAG, "Exception: " + e);
                 location = "";
             }
 

@@ -28,7 +28,7 @@
     <string name="action_about_zecovery">Zecovery</string>
     <string name="settings_category_session">Sesión</string>
     <string name="settings_summary_session">Permite iniciar la aplicación sin preguntar que tipo de cuenta desea ocupar</string>
-    <string name="settings_title_session">Recordar inicio de sesión</string>
+    <string name="settings_title_session">Omitir inicio de sesión</string>
     <string name="settings_category_data">Uso de datos</string>
     <string name="settings_summary_data">Requiere que los datos sean descargados una vez y posteriormente usa base de datos local</string>
     <string name="settings_title_data">Datos offline</string>

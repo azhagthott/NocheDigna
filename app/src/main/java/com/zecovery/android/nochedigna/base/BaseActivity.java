@@ -17,12 +17,12 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class BaseActivity extends AppCompatActivity {
 
+    public static final String JSON_URL = "http://alvaro.desa.exec.cl/moe/REST/noche_digna/json/noche-digna-export.json";
     public FirebaseAnalytics mFirebaseAnalytics;
-    private Context context;
     public static final String TAG = "log: ";
-
     public static final int PORTRAIT_MODE = 1;
     public static final int LANDSCAPE_MODE = 2;
+    public static final String CALL_CENTER_PHONE_NUMBER = "800104777";
 
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
@@ -45,4 +45,8 @@ public class BaseActivity extends AppCompatActivity {
         }
         return orientation;
     }
+
+
+
+
 }

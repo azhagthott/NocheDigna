@@ -3,28 +3,33 @@ package com.zecovery.android.nochedigna.data;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.StreetViewPanoramaCamera;
 import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.maps.android.clustering.ClusterManager;
 import com.zecovery.android.nochedigna.R;
 import com.zecovery.android.nochedigna.albergue.Albergue;
-import com.zecovery.android.nochedigna.albergue.AlbergueCluster;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by francisco on 20-07-16.
@@ -36,17 +41,11 @@ public class FirebaseDataBaseHelper {
 
     //settings
     private ProgressDialog loading;
-    private ClusterManager<AlbergueCluster> mClusterManager;
-
 
     public FirebaseDataBaseHelper() {
-
     }
 
     public List<Albergue> getDataFromFirebase(final GoogleMap map, final Context context) {
-
-
-        mClusterManager = new ClusterManager<>(context, map);
 
         loading = ProgressDialog.show(context,
                 context.getResources().getString(R.string.loading_data_dialog_title),
@@ -61,6 +60,28 @@ public class FirebaseDataBaseHelper {
 
         List<Albergue> list = new ArrayList<>();
         final LocalDataBaseHelper localDataBaseHelper = new LocalDataBaseHelper(context);
+
+        String url = "http://alvaro.desa.exec.cl/moe/REST/noche_digna/json/noche-digna-export.json";
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        Log.d(LOG_TAG, "onResponse: " + response);
+
+                    }
+
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d(LOG_TAG, "onErrorResponse: " + error);
+                    }
+                });
+
+
+
 
         // Conexion a Firebase
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -106,8 +127,7 @@ public class FirebaseDataBaseHelper {
 
                     // Vaido la cantidad de camas de los albergues
                     // si es mayor a cero, se dibuja verde
-
-                    if (latitude != 0 || longitude != 0) {
+                    /*if (latitude != 0 || longitude != 0) {
 
                         if (Integer.valueOf(camasDisponibles) > 0) {
                             map.addMarker(new MarkerOptions()
@@ -125,8 +145,7 @@ public class FirebaseDataBaseHelper {
                                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                             );
                         }
-
-                    }
+                    }*/
                 }
             }
 
@@ -157,7 +176,6 @@ public class FirebaseDataBaseHelper {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
 
                 // Recoge los datos de cada albergue
                 for (int i = 0; i < dataSnapshot.getChildrenCount(); i++) {
@@ -195,3 +213,4 @@ public class FirebaseDataBaseHelper {
         return list;
     }
 }
+
